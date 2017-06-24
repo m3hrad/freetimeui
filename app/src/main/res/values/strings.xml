@@ -5,6 +5,5 @@
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
     <string name="title_notifications">Notifications</string>
-
     <string name="search_edit_text">Search for the people</string>
 </resources>
