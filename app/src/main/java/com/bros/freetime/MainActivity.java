@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -24,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     selectedFragment = SearchFragment.newInstance();
                     break;
-                case R.id.navigation_dashboard:
+                case R.id.navigation_search:
                     selectedFragment = SearchFragment.newInstance();
                     break;
                 case R.id.navigation_notifications:
@@ -49,9 +47,7 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.content, selectedFragment);
         transaction.commit();
 
-//        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
-
 }
