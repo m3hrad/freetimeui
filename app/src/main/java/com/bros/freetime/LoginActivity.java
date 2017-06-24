@@ -1,7 +1,7 @@
-package com.bros.freetimelogin;
+package com.bros.freetime;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
