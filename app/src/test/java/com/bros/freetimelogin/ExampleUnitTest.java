@@ -1,4 +1,4 @@
-package com.bros.freetime;
+package com.bros.freetimelogin;
 
 import org.junit.Test;
 
