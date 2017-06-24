@@ -1,4 +1,4 @@
-package com.bros.freetimelogin;
+package com.bros.freetime;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.bros.freetimelogin", appContext.getPackageName());
+        assertEquals("com.bros.freetime", appContext.getPackageName());
     }
 }

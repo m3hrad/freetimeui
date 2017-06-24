@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.bros.freetimelogin.com.bros.freetime.LoginActivity">
+    tools:context="com.bros.freetime.com.bros.freetime.LoginActivity">
 
 
     <EditText
-        android:id="@+id/emailLog"
+        android:id="@+id/emailLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -19,89 +19,99 @@
         android:layout_alignParentStart="true" />
 
     <EditText
-        android:id="@+id/passwordLog"
+        android:id="@+id/passwordLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="password"
         android:inputType="textPassword"
-        android:layout_below="@+id/emailLog"
+        android:layout_below="@+id/emailLogin"
         android:layout_alignParentStart="true" />
 
     <Button
-        android:id="@+id/buttonLog"
+        android:id="@+id/buttonLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Login"
-        android:layout_below="@+id/passwordLog"
+        android:layout_below="@+id/passwordLogin"
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:id="@+id/textLog"
+        android:id="@+id/textLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Are you new?please Register"
         android:layout_marginTop="18dp"
-        android:layout_below="@+id/buttonLog"
+        android:layout_below="@+id/buttonLogin"
         android:layout_centerHorizontal="true" />
 
     <EditText
-        android:id="@+id/nameReg"
+        android:id="@+id/lastnameRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/usernameRegister"
+        android:layout_alignParentStart="true"
         android:ems="10"
-        android:hint="Name"
-        android:inputType="textPersonName"
-        android:layout_above="@+id/usernameReg"
-        android:layout_alignParentStart="true" />
+        android:hint="Lastname"
+        android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/usernameReg"
+        android:id="@+id/usernameRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Username"
         android:inputType="textPersonName"
-        android:layout_above="@+id/emailReg"
+        android:layout_above="@+id/emailRegister"
         android:layout_alignParentStart="true" />
 
     <EditText
-        android:id="@+id/emailReg"
+        android:id="@+id/emailRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        android:layout_above="@+id/passwordReg"
+        android:layout_above="@+id/passwordRegister"
         android:layout_alignParentStart="true" />
 
     <EditText
-        android:id="@+id/passwordReg"
+        android:id="@+id/passwordRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="password"
         android:inputType="textPassword"
-        android:layout_above="@+id/conPassReg"
+        android:layout_above="@+id/conPassRegister"
         android:layout_alignParentStart="true" />
 
     <EditText
-        android:id="@+id/conPassReg"
+        android:id="@+id/conPassRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Confirm password"
         android:inputType="textPassword"
-        android:layout_above="@+id/buttonReg"
+        android:layout_above="@+id/buttonRegister"
         android:layout_alignParentStart="true" />
 
     <Button
-        android:id="@+id/buttonReg"
+        android:id="@+id/buttonRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Register"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/firstnameRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lastnameRegister"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:hint="Firstname"
+        android:inputType="textPersonName" />
 
 
 </RelativeLayout>
