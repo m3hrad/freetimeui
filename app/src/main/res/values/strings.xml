@@ -5,11 +5,8 @@
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
     <string name="title_add">Add</string>
-
     <string name="search_edit_text">Search for the people</string>
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="add_event_name_hint">Name</string>
     <string name="add_event_start_date_hint">start date</string>
     <string name="add_event_start_time_hint">start time</string>
