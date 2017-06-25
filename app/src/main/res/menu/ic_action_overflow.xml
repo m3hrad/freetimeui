@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--<item-->
-        <!--android:id="@+id/empty"-->
-        <!--android:orderInCategory="101">-->
-
         <menu>
-
             <item
                 android:id="@+id/action_settings"
                 android:orderInCategory="96"
@@ -26,9 +21,5 @@
                 android:id="@+id/action_feedback"
                 android:orderInCategory="99"
                 android:title="fifth"/>
-
         </menu>
-
-    <!--</item>-->
-
 </menu>
