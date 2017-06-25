@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_search:
                     selectedFragment = SearchFragment.newInstance();
                     break;
-                case R.id.navigation_notifications:
-                    selectedFragment = SearchFragment.newInstance();
+                case R.id.navigation_add:
+                    selectedFragment = AddEventFragment.newInstance();
                     break;
             }
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
