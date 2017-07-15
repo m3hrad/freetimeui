@@ -11,11 +11,12 @@
 - Success Reply:
 
 {
-"friends": {
+"friends": [{
 	"id": 101,
 	"firstname": "Mahyar",
 	"lastname": "Mohammadi"
-			}}
+	}]
+}
 
 - Error Reply:
 
