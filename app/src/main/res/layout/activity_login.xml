@@ -1,117 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.bros.freetime.com.bros.freetime.LoginActivity">
+    android:orientation="vertical"
+    tools:context="com.bros.freetime.LoginActivity">
 
-
-    <EditText
-        android:id="@+id/emailLogin"
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:layout_marginTop="24dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:id="@+id/passwordLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="password"
-        android:inputType="textPassword"
-        android:layout_below="@+id/emailLogin"
-        android:layout_alignParentStart="true" />
+        android:layout_marginTop="20dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo" />
 
     <Button
-        android:id="@+id/buttonLogin"
+        android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:layout_below="@+id/passwordLogin"
-        android:layout_alignParentStart="true" />
+        android:layout_marginTop="60dp"
+        android:text="Show Log in" />
 
     <TextView
-        android:id="@+id/textLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Are you new?please Register"
-        android:layout_marginTop="18dp"
-        android:layout_below="@+id/buttonLogin"
-        android:layout_centerHorizontal="true" />
-
-    <EditText
-        android:id="@+id/lastnameRegister"
+        android:id="@+id/token"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/usernameRegister"
-        android:layout_alignParentStart="true"
-        android:ems="10"
-        android:hint="Lastname"
-        android:inputType="textPersonName" />
-
-    <EditText
-        android:id="@+id/usernameRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Username"
-        android:inputType="textPersonName"
-        android:layout_above="@+id/emailRegister"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:id="@+id/emailRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:layout_above="@+id/passwordRegister"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:id="@+id/passwordRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="password"
-        android:inputType="textPassword"
-        android:layout_above="@+id/conPassRegister"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:id="@+id/conPassRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Confirm password"
-        android:inputType="textPassword"
-        android:layout_above="@+id/buttonRegister"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:id="@+id/buttonRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:id="@+id/firstnameRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/lastnameRegister"
-        android:layout_centerHorizontal="true"
-        android:ems="10"
-        android:hint="Firstname"
-        android:inputType="textPersonName" />
-
-
-</RelativeLayout>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="Not logged in"
+        android:textSize="21sp" />
+</LinearLayout>
