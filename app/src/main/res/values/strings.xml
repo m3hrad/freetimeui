@@ -13,4 +13,6 @@
     <string name="add_event_start_time_hint">start time</string>
     <string name="add_event_end_date_hint">end date</string>
     <string name="add_event_end_time_hint">end time</string>
+    <string name="com_auth0_client_id">ahctEeZzEuoOucS5qEsDsskthwTeBfdx</string>
+    <string name="com_auth0_domain">freetime.eu.auth0.com</string>
 </resources>
