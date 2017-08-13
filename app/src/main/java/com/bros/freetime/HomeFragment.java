@@ -110,6 +110,7 @@ public class HomeFragment extends Fragment {
             HttpHandler sh = new HttpHandler();
             // Making a request to url and getting response
             String url = "https://freetime-backend-dev.herokuapp.com/friends/0/";
+
             String jsonStr = sh.makeServiceCall(url);
 
             Log.e(TAG, "Response from url: " + jsonStr);
