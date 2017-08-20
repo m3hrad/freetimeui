@@ -3,6 +3,7 @@
     package="com.bros.freetime">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!--<uses-permission android:name="android.permission.RECORD_AUDIO" />-->
 
     <application
         android:allowBackup="true"
@@ -11,14 +12,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
         <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main">
+            android:name=".LoginActivity"
+            android:configChanges = "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+        android:label="@string/title_activity_main">
+        <!--<activity-->
+            <!--android:name=".MainActivity"-->
+            <!--android:exported="true">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity"/>
     </application>
 
 </manifest>
