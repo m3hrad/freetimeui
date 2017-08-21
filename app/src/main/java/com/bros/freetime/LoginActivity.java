@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import static com.bros.freetime.R.id.loginButton;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
@@ -139,7 +140,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            sendLoginRequestToBackAndChangeActivity();
+                            sendLoginRequestToBack();
                             Log.d(TAG, "signInWithEmail:success");
                             emailLoginEditText.setText("");
                             passwordLoginEditText.setText("");
@@ -173,7 +174,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-                                sendLoginRequestToBackAndChangeActivity();
+                                sendLoginRequestToBack();
                                 Log.d(TAG, "createUserWithEmail:success");
                                 FirebaseUser user = mFirebaseAuth.getCurrentUser();
                                 updateUI(user);
@@ -190,11 +191,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         }
                     });
         }
-        if(!passwordRegisterString.equals(passwordConfirmRegisterString)){
-            Toast.makeText(LoginActivity.this, "The password doesn't match confirm password.",Toast.LENGTH_LONG).show();
-        } else
         if(passwordRegisterString.length() < 6){
             Toast.makeText(LoginActivity.this, "The password should be more than 5 characters.",Toast.LENGTH_LONG).show();
+        } else
+        if(!passwordRegisterString.equals(passwordConfirmRegisterString)){
+            Toast.makeText(LoginActivity.this, "The password doesn't match confirm password.",Toast.LENGTH_LONG).show();
         } else
         if(!isEmailValid(emailRegisterString)){
             Toast.makeText(LoginActivity.this, "The email doesn't have email format.",Toast.LENGTH_LONG).show();
@@ -255,7 +256,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
-    private void sendLoginRequestToBackAndChangeActivity() {
+    private void sendLoginRequestToBack() {
         changeActivity();
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network network = new BasicNetwork(new HurlStack());
@@ -263,6 +264,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mRequestQueue.start();
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         final String url = "https://freetime-backend-dev.herokuapp.com/auth/";
+
+//        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+//        mUser.getIdToken(true)
+//                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+//                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+//                        if (task.isSuccessful()) {
+//                            String idToken = task.getResult().getToken();
+//                            // Send token to your backend via HTTPS
+//                        } else {
+//                            // Handle error -> task.getException();
+//                        }
+//                    }
+//                });
+
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
             new Response.Listener<String>() {
                 @Override
@@ -306,7 +321,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            sendLoginRequestToBackAndChangeActivity();
+                            sendLoginRequestToBack();
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             updateUI(user);
@@ -330,7 +345,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            sendLoginRequestToBackAndChangeActivity();
+                            sendLoginRequestToBack();
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             updateUI(user);
