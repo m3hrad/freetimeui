@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "610634232361",
+    "firebase_url": "https://free-time-c6774.firebaseio.com",
+    "project_id": "free-time-c6774",
+    "storage_bucket": "free-time-c6774.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:610634232361:android:e41de1b4bad6aa35",
+        "android_client_info": {
+          "package_name": "com.bros.freetime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "610634232361-hgdr78nl032u29rf5jis29hgcammbrs5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bros.freetime",
+            "certificate_hash": "da0773d86bc7d3e69f3673bf43a37e79872acb91"
+          }
+        },
+        {
+          "client_id": "610634232361-kdt710uqeiv2rk592umm54gvrjbegeg1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXPtXwJhEaBlKciNuovQbkUDSAV4hnPl4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "610634232361-kdt710uqeiv2rk592umm54gvrjbegeg1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
