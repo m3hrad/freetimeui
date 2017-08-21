@@ -98,7 +98,6 @@ public class HomeFragment extends Fragment {
     private class GetContacts extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
-
             super.onPreExecute();
         }
 
@@ -110,7 +109,6 @@ public class HomeFragment extends Fragment {
             String url = "https://freetime-backend-dev.herokuapp.com/friends/0/";
 
             String jsonStr = sh.makeServiceCall(url);
-
             Log.e(TAG, "Response from url: " + jsonStr);
             if (jsonStr != null) {
                 try {
