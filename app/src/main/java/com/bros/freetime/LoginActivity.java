@@ -41,6 +41,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private static String TAG = "Login Activity";
     EditText emailRegisterEditText, passwordRegisterEditText, passwordConfirmRegisterEditText, emailLoginEditText, passwordLoginEditText;
     String emailRegisterString, passwordRegisterString, passwordConfirmRegisterString, emailLoginString, passwordLoginString;
-    String idToken = "";
+    String idToken;
     CallbackManager callbackManager;
     String loginMethod = "";
 
@@ -103,63 +104,84 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             mFirebaseAuth.removeAuthStateListener(mAuthstateListener);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case loginButton:
+                firebaseLoginWithEmailAndPassword();
+                break;
+            case R.id.registerButton:
+                firebaseRegisterWithEmailAndPassword();
+                break;
+            case R.id.googleButton:
+                signInGoogle();
+                loginMethod = "google";
+                break;
+            case R.id.facebookButton:
+                signInFacebook();
+                loginMethod = "facebook";
+                break;
+        }
+    }
+
     private void signInGoogle() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (loginMethod) {
-            case "facebook":
-                super.onActivityResult(requestCode, resultCode, data);
-                callbackManager.onActivityResult(requestCode, resultCode, data);
-                //Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-            break;
-            case "google":
-                super.onActivityResult(requestCode, resultCode, data);
-                if (requestCode == RC_SIGN_IN) {
-                    GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-                    if (result.isSuccess()) {
-                        // Google Sign In was successful, authenticate with Firebase
-                        GoogleSignInAccount account = result.getSignInAccount();
-                        firebaseLoginWithGoogle(account);
-                    }
-                }
-                break;
-            }
-    }
-
-    private void firebaseLoginWithEmailAndPassword() {
-        passwordLoginString = passwordLoginEditText.getText().toString();
-        emailLoginString = emailLoginEditText.getText().toString();
-
-        mFirebaseAuth.signInWithEmailAndPassword(emailLoginString, passwordLoginString)
+    //    firebaseAuthWithGoogle
+    private void firebaseLoginWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mFirebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             sendLoginRequestToBack();
-                            Log.d(TAG, "signInWithEmail:success");
-                            emailLoginEditText.setText("");
-                            passwordLoginEditText.setText("");
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                            updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "The user does not exist or the password is not correct.",
-                                    Toast.LENGTH_LONG).show();
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
                     }
                 });
     }
 
-    public static boolean isEmailValid(String emailReg) {
-        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(emailReg);
-        return matcher.matches();
+    private void firebaseLoginWithEmailAndPassword() {
+        passwordLoginString = passwordLoginEditText.getText().toString();
+        emailLoginString = emailLoginEditText.getText().toString();
+
+        if(!(passwordLoginString.isEmpty()) && !(emailLoginString.isEmpty())) {
+            mFirebaseAuth.signInWithEmailAndPassword(emailLoginString, passwordLoginString)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                sendLoginRequestToBack();
+                                Log.d(TAG, "signInWithEmail:success");
+                                emailLoginEditText.setText("");
+                                passwordLoginEditText.setText("");
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(LoginActivity.this, "The user does not exist or the password is not correct.",
+                                        Toast.LENGTH_LONG).show();
+                                updateUI(null);
+                            }
+                        }
+                    });
+        }
+        else {
+            Toast.makeText(LoginActivity.this, "The login username or login password is blank.", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void firebaseRegisterWithEmailAndPassword() {
@@ -178,6 +200,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 Log.d(TAG, "createUserWithEmail:success");
                                 FirebaseUser user = mFirebaseAuth.getCurrentUser();
                                 updateUI(user);
+                                emailRegisterEditText.setText("");
+                                passwordRegisterEditText.setText("");
+                                passwordConfirmRegisterEditText.setText("");
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -200,6 +225,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if(!isEmailValid(emailRegisterString)){
             Toast.makeText(LoginActivity.this, "The email doesn't have email format.",Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static boolean isEmailValid(String emailReg) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(emailReg);
+        return matcher.matches();
     }
 
     private void signInFacebook() {
@@ -228,115 +260,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
     }
 
-    private void updateUI(FirebaseUser user) {
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "connection failed!");
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case loginButton:
-                firebaseLoginWithEmailAndPassword();
-                break;
-            case R.id.registerButton:
-                firebaseRegisterWithEmailAndPassword();
-                break;
-            case R.id.googleButton:
-                signInGoogle();
-                loginMethod = "google";
-                break;
-            case R.id.facebookButton:
-                signInFacebook();
-                loginMethod = "facebook";
-                break;
-        }
-    }
-
-    private void sendLoginRequestToBack() {
-        changeActivity();
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
-        Network network = new BasicNetwork(new HurlStack());
-        RequestQueue mRequestQueue = new RequestQueue(cache, network);
-        mRequestQueue.start();
-        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        final String url = "https://freetime-backend-dev.herokuapp.com/auth/";
-
-//        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-//        mUser.getIdToken(true)
-//                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-//                    public void onComplete(@NonNull Task<GetTokenResult> task) {
-//                        if (task.isSuccessful()) {
-//                            String idToken = task.getResult().getToken();
-//                            // Send token to your backend via HTTPS
-//                        } else {
-//                            // Handle error -> task.getException();
-//                        }
-//                    }
-//                });
-
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-            new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    // response
-                    Log.d("Response", response);
-                }
-            },
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d("Error.Response", error.getMessage());
-                }
-            }
-    )
-        {
-        @Override
-        protected Map<String, String> getParams() {
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("idtoken", idToken);
-            params.put("email", "email");
-            return params;
-        }
-        @Override
-        public Map<String, String> getHeaders() throws AuthFailureError {
-            HashMap<String, String> headers = new HashMap<String, String>();
-            headers.put("idToken", idToken);
-            return headers;
-        }
-    };
-        queue.add(postRequest);
-}
-
-//    firebaseAuthWithGoogle
-    private void firebaseLoginWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mFirebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            sendLoginRequestToBack();
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                            updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
-                    }
-                });
-    }
-
-    private void handleFacebookAccessToken(AccessToken token) {
+    private void handleFacebookAccessToken(final AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mFirebaseAuth.signInWithCredential(credential)
@@ -359,6 +283,94 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (loginMethod) {
+            case "facebook":
+                super.onActivityResult(requestCode, resultCode, data);
+                callbackManager.onActivityResult(requestCode, resultCode, data);
+                //Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+                break;
+            case "google":
+                super.onActivityResult(requestCode, resultCode, data);
+                if (requestCode == RC_SIGN_IN) {
+                    GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+                    if (result.isSuccess()) {
+                        // Google Sign In was successful, authenticate with Firebase
+                        GoogleSignInAccount account = result.getSignInAccount();
+                        firebaseLoginWithGoogle(account);
+                    }
+                }
+                break;
+        }
+    }
+
+    private void updateUI(FirebaseUser user) {
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(TAG, "connection failed!");
+    }
+
+    private void sendLoginRequestToBack() {
+        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+        Network network = new BasicNetwork(new HurlStack());
+        RequestQueue mRequestQueue = new RequestQueue(cache, network);
+        mRequestQueue.start();
+        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        final String url = "https://freetime-backend-dev.herokuapp.com/auth/";
+
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        mUser.getIdToken(true)
+                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+                        if (task.isSuccessful()) {
+                            final String idToken = task.getResult().getToken();
+                            // Send token to your backend via HTTPS
+
+                            StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            // response
+                                            Log.d("Response", response);
+                                        }
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            Log.d("Error.Response", error.getMessage());
+                                        }
+                                    }
+                            ) {
+                                @Override
+                                protected Map<String, String> getParams() {
+                                    Map<String, String> params = new HashMap<String, String>();
+                                    params.put("idtoken", idToken);
+                                    emailRegisterEditText.setText(idToken);
+                                    params.put("email", "email");
+                                    return params;
+                                }
+
+                                @Override
+                                public Map<String, String> getHeaders() throws AuthFailureError {
+                                    HashMap<String, String> headers = new HashMap<String, String>();
+                                    headers.put("idToken", idToken);
+                                    return headers;
+                                }
+                            };
+                            queue.add(postRequest);
+
+
+                        } else {
+                            // Handle error -> task.getException();
+                        }
+                    }
+                });
+//        changeActivity();
+}
 
     //for changing the activity from changeActivity to another activity
     private void changeActivity() {
