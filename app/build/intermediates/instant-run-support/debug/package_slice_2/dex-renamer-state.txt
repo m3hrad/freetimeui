@@ -1,4 +1,0 @@
-#Tue Sep 05 23:39:41 EEST 2017
-base.0=C\:\\Mahyar\\projects\\freetimeui\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\5\\slice_2
-renamed.0=classes.dex
-file.0=C\:\\Mahyar\\projects\\freetimeui\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\5\\slice_2\\classes.dex
