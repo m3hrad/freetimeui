@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.bros.freetime.R.id.textView;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.facebook.FacebookSdk.getCacheDir;
 import static com.google.android.gms.internal.zzahf.runOnUiThread;
