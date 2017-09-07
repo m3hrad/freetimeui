@@ -3,6 +3,7 @@ package com.bros.freetime;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -43,11 +44,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static android.R.attr.fragment;
+import static android.R.attr.value;
+import static com.bros.freetime.R.id.emailLogin;
 import static com.bros.freetime.R.id.loginButton;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
@@ -58,10 +66,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private static int RC_SIGN_IN = 0;
     private static String TAG = "Login Activity";
     EditText emailRegisterEditText, passwordRegisterEditText, passwordConfirmRegisterEditText, emailLoginEditText, passwordLoginEditText;
-    String emailRegisterString, passwordRegisterString, passwordConfirmRegisterString, emailLoginString, passwordLoginString;
-    String idToken;
+    private String emailRegisterString, passwordRegisterString, passwordConfirmRegisterString, emailLoginString, passwordLoginString;
+    private String idToken;
     CallbackManager callbackManager;
-    String loginMethod = "";
+    private String loginMethod = "";
+    private String userIdString;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -321,21 +330,30 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mRequestQueue.start();
         final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         final String url = "https://freetime-backend-dev.herokuapp.com/auth/";
-
-        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
         mUser.getIdToken(true)
                 .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                     public void onComplete(@NonNull Task<GetTokenResult> task) {
                         if (task.isSuccessful()) {
                             final String idToken = task.getResult().getToken();
+                            final String emailS = mUser.getEmail();
                             // Send token to your backend via HTTPS
-
                             StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                                     new Response.Listener<String>() {
                                         @Override
                                         public void onResponse(String response) {
                                             // response
                                             Log.d("Response", response);
+                                            try {
+                                                JSONObject jsonObj = new JSONObject(response);
+                                                userIdString = jsonObj.getString("id");
+                                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                                intent.putExtra("userId", userIdString);
+                                                intent.putExtra("tokenId", idToken);
+                                                startActivity(intent);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     },
                                     new Response.ErrorListener() {
@@ -348,33 +366,22 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 @Override
                                 protected Map<String, String> getParams() {
                                     Map<String, String> params = new HashMap<String, String>();
-                                    params.put("idtoken", idToken);
-                                    emailRegisterEditText.setText(idToken);
-                                    params.put("email", "email");
+                                    params.put("email", emailS);
                                     return params;
                                 }
-
                                 @Override
                                 public Map<String, String> getHeaders() throws AuthFailureError {
                                     HashMap<String, String> headers = new HashMap<String, String>();
-                                    headers.put("idToken", idToken);
+                                    headers.put("Authorization", idToken);
                                     return headers;
                                 }
                             };
                             queue.add(postRequest);
-
 
                         } else {
                             // Handle error -> task.getException();
                         }
                     }
                 });
-//        changeActivity();
-}
-
-    //for changing the activity from changeActivity to another activity
-    private void changeActivity() {
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
     }
 }
