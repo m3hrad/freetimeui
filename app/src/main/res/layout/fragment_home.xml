@@ -9,9 +9,34 @@
     android:orientation="vertical"
     tools:context="com.bros.freetime.HomeFragment">
 
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight= "0.8"/>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_weight="0.1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:textOff="UnAvailable"
+            android:textOn="Available"
+            android:layout_marginBottom="30dp"/>
+
+    </LinearLayout>
 
 </RelativeLayout>
