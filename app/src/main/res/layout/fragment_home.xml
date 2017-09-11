@@ -22,15 +22,16 @@
             android:layout_height="wrap_content"
             android:layout_weight= "0.8"/>
 
-        <ToggleButton
-            android:id="@+id/toggleButton"
-            android:layout_weight="0.1"
+        <TextView
+            android:id="@+id/userStatusButton"
+            android:text="text Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:textOff="UnAvailable"
-            android:textOn="Available"
-            android:layout_marginBottom="30dp"/>
+            android:layout_weight="0.1"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:background="@android:color/holo_blue_light"/>
 
     </LinearLayout>
 

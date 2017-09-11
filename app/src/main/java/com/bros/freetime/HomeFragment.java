@@ -1,5 +1,8 @@
 package com.bros.freetime;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,11 +36,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.bros.freetime.R.id.toggleButton;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.facebook.FacebookSdk.getCacheDir;
 import static com.google.android.gms.internal.zzahf.runOnUiThread;
@@ -57,10 +59,12 @@ public class HomeFragment extends Fragment {
     private ListView lv;
     private String userId;
     private String tokenId;
-    ArrayList<HashMap<String, String>> contactList;
-    String status;
+    private ArrayList<HashMap<String, String>> contactList;
+    private String status;
     View v;
-    ToggleButton toggle;
+    TextView userStatusButton;
+    private String futureUserStatus;
+    private String userStatusValue, userStatus;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -108,29 +112,37 @@ public class HomeFragment extends Fragment {
         v = inflater.inflate(R.layout.fragment_home, container, false);
         contactList = new ArrayList<>();
         lv = (ListView) v.findViewById(R.id.list);
-        String userStatusString = getActivity().getIntent().getStringExtra("availableStatus");
-        toggle = (ToggleButton) v.findViewById(toggleButton);
-        if(userStatusString.equals("false")) {
-            toggle.setChecked(false);
+        userStatusValue = getActivity().getIntent().getStringExtra("availableStatus");
+        userFriendsInfoRequest();
+        userStatusButton = (TextView) v.findViewById(R.id.userStatusButton);
+        if(userStatusValue.equals("false")) {
+            userStatus = "UnAvailable";
+            futureUserStatus = "true";
         }
-        else if(userStatusString.equals("true")) {
-            toggle.setChecked(true);
+        else if(userStatusValue.equals("true")) {
+            userStatus = "Available";
+            futureUserStatus = "false";
         }
         else {
-            Toast.makeText(getActivity(), "Network connection error, please try again", Toast.LENGTH_LONG).show();        }
-
-        userFriendInfoRequest();
-
-        toggle = (ToggleButton) v.findViewById(toggleButton);
-        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                availabeStatus();
+            Toast.makeText(getActivity(), "Network connection error, please try again", Toast.LENGTH_SHORT).show();
+        }
+        userStatusButton.setText(userStatus);
+        userStatusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(userStatusButton.getText().equals("UnAvailable")) {
+                    futureUserStatus = "true";
+                }
+                else if(userStatusButton.getText().equals("Available")) {
+                    futureUserStatus = "false";
+                }
+                    setAvailabeStatus();
             }
         });
         return v;
     }
 
-    private void availabeStatus() {
+    private void setAvailabeStatus() {
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network network = new BasicNetwork(new HurlStack());
         RequestQueue mRequestQueue = new RequestQueue(cache, network);
@@ -138,12 +150,7 @@ public class HomeFragment extends Fragment {
         final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         userId = getActivity().getIntent().getStringExtra("userId");
         final String url = "https://freetime-backend-dev.herokuapp.com/user/" + userId;
-        tokenId = getActivity().getIntent().getStringExtra("tokenId");
-        if(toggle.isChecked()){
-            status = "true";}
-        else{
-            status = "false";}
-
+        status = futureUserStatus;
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 new Response.Listener<String>()
                 {
@@ -151,31 +158,32 @@ public class HomeFragment extends Fragment {
                     public void onResponse(String response) {
                         // response
                         Log.d("Response", response);
-                        try {
-                            JSONObject jsonObj = new JSONObject(String.valueOf(response));
-                            String availableString = jsonObj.getString("available");
-                            if(availableString.equals("false")) {
-                                toggle.setChecked(false);
-                                Toast.makeText(getActivity(), "You are not available now", Toast.LENGTH_SHORT).show();
-                            }
-                            else if(availableString.equals("true")) {
-                                toggle.setChecked(true);
-                                Toast.makeText(getActivity(), "You are available now", Toast.LENGTH_SHORT).show();
-                            }
-                            else {
-                                Toast.makeText(getActivity(), "Network error, please try again", Toast.LENGTH_SHORT).show();
-                            }
-
-                        } catch (final JSONException e) {
-                            Log.e(TAG, "Json parsing error: " + e.getMessage());
-                            runOnUiThread(new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity(), "Json parsing error: " + e.getMessage(),
-                                            Toast.LENGTH_LONG).show();
+                        String responseStr = response;
+                            try {
+//                                JSONObject jsonObj = new JSONObject(String.valueOf(response));
+                                JSONObject jsonObj = new JSONObject(responseStr);
+                                String availableString = jsonObj.getString("available");
+                                if (availableString.equals("false")) {
+                                    userStatusButton.setText("UnAvailable");
+                                    Toast.makeText(getActivity(), "You are not available now", Toast.LENGTH_SHORT).show();
+                                } else if (availableString.equals("true")) {
+                                    userStatusButton.setText("Available");
+                                    Toast.makeText(getActivity(), "You are available now", Toast.LENGTH_SHORT).show();
+                                } else if (availableString.equals("")) {
+                                    Toast.makeText(getActivity(), "Network error, please try again", Toast.LENGTH_SHORT).show();
                                 }
-                            }));
-                        }
+
+                            } catch (final JSONException e) {
+                                Toast.makeText(getActivity(), "Network error!", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Json parsing error: " + e.getMessage());
+                                runOnUiThread(new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity(), e.getMessage(),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }));
+                            }
                     }
                 },
                 new Response.ErrorListener()
@@ -183,11 +191,13 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         // error
+                        Toast.makeText(getActivity(), "Network error!", Toast.LENGTH_SHORT).show();
                         Log.d("Error.Response", "volleyError");
                     }
                 }
         ) {
             @Override
+
             protected Map<String, String> getParams()
             {
                 Map<String, String> params = new HashMap<String, String>();
@@ -204,7 +214,7 @@ public class HomeFragment extends Fragment {
         queue.add(putRequest);
     }
 
-    private void userFriendInfoRequest() {
+    private void userFriendsInfoRequest() {
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network network = new BasicNetwork(new HurlStack());
         RequestQueue mRequestQueue = new RequestQueue(cache, network);
@@ -240,16 +250,13 @@ public class HomeFragment extends Fragment {
                                         R.layout.list_item, new String[]{"id", "first_name", "last_name"},
                                         new int[]{R.id.id, R.id.first_name, R.id.last_name});
                                 lv.setAdapter(adapter);
-                                //run available method
-                                availabeStatus();
                             }
                         } catch (final JSONException e) {
                             Log.e(TAG, "Json parsing error: " + e.getMessage());
                             runOnUiThread(new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getActivity(), "Json parsing error: " + e.getMessage(),
-                                            Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), "Network error!" + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }));
                         }
