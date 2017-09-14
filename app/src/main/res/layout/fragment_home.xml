@@ -12,26 +12,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:orientation="vertical">
+
+        <Switch
+            android:id="@+id/userStatusSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:text="Available" />
 
         <ListView
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight= "0.8"/>
-
-        <TextView
-            android:id="@+id/userStatusButton"
-            android:text="text Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.1"
-            android:layout_marginBottom="30dp"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:background="@android:color/holo_blue_light"/>
 
     </LinearLayout>
 
