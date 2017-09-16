@@ -118,12 +118,13 @@ public class HomeFragment extends Fragment {
         userStatusSwitch = (Switch) v.findViewById(R.id.userStatusSwitch);
 
         if(userStatusValue.equals("false")) {
-            userStatusSwitch.setChecked(true);
-            futureUserStatus = "false";
+            userStatusSwitch.setChecked(false);
+            userStatusSwitch.setText("          Unavailable ");
         }
         else if(userStatusValue.equals("true")) {
-            userStatusSwitch.setChecked(false);
-            futureUserStatus = "true";
+            userStatusSwitch.setChecked(true);
+            userStatusSwitch.setText("            Available ");
+
         }
         else {
             Toast.makeText(getActivity(), "Network connection error, please try again", Toast.LENGTH_SHORT).show();
@@ -133,12 +134,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b){
-
-                    userStatusSwitch.setChecked(true);
-                    futureUserStatus = "false";
-                } else {
-                    userStatusSwitch.setChecked(false);
                     futureUserStatus = "true";
+                } else {
+                    futureUserStatus = "false";
 
                 }
                 setAvailabeStatus();
@@ -170,27 +168,21 @@ public class HomeFragment extends Fragment {
                             try {
                                 JSONObject jsonObj = new JSONObject(responseStr);
                                 String availableString = jsonObj.getString("available");
-                                if (availableString.equals("false")) {
-                                    userStatusSwitch.setText("Available");
-                                    Toast.makeText(getActivity(), "You are not available now", Toast.LENGTH_SHORT).show();
-                                } else if (availableString.equals("true")) {
-                                    userStatusSwitch.setText("Available");
+                                if (availableString.equals("true")) {
+                                    userStatusSwitch.setText("           Available ");
+                                    userStatusSwitch.setChecked(true);
                                     Toast.makeText(getActivity(), "You are available now", Toast.LENGTH_SHORT).show();
-                                } else if (availableString.equals("") || !availableString.equals("true") || !availableString.equals("false")) {
-                                    if(status.equals("false")){
-                                        userStatusSwitch.setText("Connection Error");
-                                    } else if(status.equals("true")) {
-                                        userStatusSwitch.setText("Connection Error");
-                                    }
-                                    Toast.makeText(getActivity(), "Network error, please try again", Toast.LENGTH_SHORT).show();
+                                } else if (availableString.equals("false")) {
+                                    userStatusSwitch.setText("         Unavailable ");
+                                    userStatusSwitch.setChecked(false);
+                                    Toast.makeText(getActivity(), "You are not available now", Toast.LENGTH_SHORT).show();
+                                } else {
+                                        userStatusSwitch.setText("Connection Error ");
+                                    Toast.makeText(getActivity(), "Connection error!", Toast.LENGTH_SHORT).show();
                                 }
                             } catch (final JSONException e) {
-                                if(status.equals("false")){
-                                    userStatusSwitch.setText("Connection Error");
-                                } else if(status.equals("true")) {
-                                    userStatusSwitch.setText("Connection Error");
-                                }
-                                Toast.makeText(getActivity(), "Network error!", Toast.LENGTH_SHORT).show();
+                                userStatusSwitch.setText("Connection Error ");
+                                Toast.makeText(getActivity(), "Connection error!", Toast.LENGTH_SHORT).show();
                                 Log.e(TAG, "Json parsing error: " + e.getMessage());
                                 runOnUiThread(new Thread(new Runnable() {
                                     @Override
@@ -206,13 +198,8 @@ public class HomeFragment extends Fragment {
                 {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        // error
-                        if(status.equals("false")){
-                            userStatusSwitch.setText("Connection Error");
-                        } else if(status.equals("true")) {
-                            userStatusSwitch.setText("Connection Error");
-                        }
-                        Toast.makeText(getActivity(), "Network error!", Toast.LENGTH_SHORT).show();
+                        userStatusSwitch.setText("Connection Error ");
+                        Toast.makeText(getActivity(), "Connection error!", Toast.LENGTH_SHORT).show();
                         Log.d("Error.Response", "volleyError");
                     }
                 }
@@ -234,8 +221,7 @@ public class HomeFragment extends Fragment {
         };
         queue.add(putRequest);
     }
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private void userFriendsInfoRequest() {
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network network = new BasicNetwork(new HurlStack());
@@ -263,10 +249,12 @@ public class HomeFragment extends Fragment {
                                 String id = c.getString("id");
                                 String first_name = c.getString("first_name");
                                 String last_name = c.getString("last_name");
+//                                String email = c.getString("email");
                                 HashMap<String, String> contact = new HashMap<>();
                                 contact.put("id", id);
                                 contact.put("first_name", first_name);
                                 contact.put("last_name", last_name);
+//                                contact.put("email", email);
                                 contactList.add(contact);
                                 ListAdapter adapter = new SimpleAdapter(getActivity(), contactList,
                                         R.layout.list_item, new String[]{"id", "first_name", "last_name"},
