@@ -16,12 +16,19 @@
         android:layout_marginBottom="5dp"
         android:orientation="vertical">
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
         <Switch
             android:id="@+id/userStatusSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.1"
-            android:text="Available" />
+            android:text="Available"
+            android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
 
         <ListView
             android:id="@+id/list"
