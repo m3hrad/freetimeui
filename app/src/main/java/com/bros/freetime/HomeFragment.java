@@ -117,8 +117,8 @@ public class HomeFragment extends Fragment {
         }
         userStatusSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                userNextStatus = b;
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                userNextStatus = isChecked;
                 setAvailabeStatus();
             }
         });

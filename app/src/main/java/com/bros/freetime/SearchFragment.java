@@ -1,12 +1,15 @@
 package com.bros.freetime;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -101,15 +104,44 @@ public class SearchFragment extends Fragment {
         contactList = new ArrayList<>();
         lv = (ListView) v.findViewById(R.id.list);
         searchEditText = (EditText) v.findViewById(R.id.searchEditText);
+        //adding search to keyboard and hiding
+        searchEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    switch (keyCode)
+                    {
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                            searchFriendsInfoRequest();
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
         searchButton = (Button) v.findViewById(R.id.searchButton);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 searchFriendsInfoRequest();
             }
         });
+//        InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+//        inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),
+//                InputMethodManager.HIDE_NOT_ALWAYS);
+
         return v;
     }
+
+
 
     private void searchFriendsInfoRequest() {
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
@@ -139,8 +171,10 @@ public class SearchFragment extends Fragment {
                             for (int i = 0; i < contacts.length(); i++) {
                                 JSONObject c = contacts.getJSONObject(i);
                                 String email = c.getString("email");
+                                String id = c.getString("id");
                                 HashMap<String, String> contact = new HashMap<>();
                                 contact.put("email", email);
+                                contact.put("id",id);
                                 contactList.add(contact);
                                 ListAdapter adapter = new SimpleAdapter(getActivity(), contactList,
                                         R.layout.list_item, new String[]{"email"},
