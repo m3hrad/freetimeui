@@ -3,7 +3,9 @@
     package="com.bros.freetime">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="26" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -24,7 +26,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="adjustNothing" />
     </application>
 
 </manifest>

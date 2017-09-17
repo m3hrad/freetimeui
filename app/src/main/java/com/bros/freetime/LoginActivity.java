@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private String idToken;
     CallbackManager callbackManager;
     private String loginMethod = "";
-    private String userIdString;
+    private String userIdString, userAvailable;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -347,9 +347,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                             try {
                                                 JSONObject jsonObj = new JSONObject(response);
                                                 userIdString = jsonObj.getString("id");
+                                                userAvailable = jsonObj.getString("available");
                                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                                 intent.putExtra("userId", userIdString);
                                                 intent.putExtra("tokenId", idToken);
+                                                intent.putExtra("availableStatus", userAvailable);
                                                 startActivity(intent);
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
@@ -380,6 +382,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                         } else {
                             // Handle error -> task.getException();
+                            Log.d("TAG", task.getException().toString());
                         }
                     }
                 });

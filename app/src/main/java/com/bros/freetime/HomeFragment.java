@@ -1,24 +1,18 @@
 package com.bros.freetime;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
+import android.widget.Switch;
 import android.widget.Toast;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -31,25 +25,14 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.vision.text.Text;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.facebook.FacebookSdk.getCacheDir;
-import static com.google.android.gms.internal.zzahf.runOnUiThread;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -65,8 +48,12 @@ public class HomeFragment extends Fragment {
     private ListView lv;
     private String userId;
     private String tokenId;
-    private String responseStr = "";
-    ArrayList<HashMap<String, String>> contactList;
+    private ArrayList<HashMap<String, String>> contactList;
+    private String status;
+    View v;
+    private boolean userNextStatus;
+    private String userStatusValue;
+    Switch userStatusSwitch;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -111,17 +98,102 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        View v = inflater.inflate(R.layout.fragment_home, container, false);
-
+        v = inflater.inflate(R.layout.fragment_home, container, false);
         contactList = new ArrayList<>();
         lv = (ListView) v.findViewById(R.id.list);
-
-            userInfoRequest();
+        userStatusValue = getActivity().getIntent().getStringExtra("availableStatus");
+        userFriendsInfoRequest();
+        userStatusSwitch = (Switch) v.findViewById(R.id.userStatusSwitch);
+        if(userStatusValue.equals("false")) {
+            userStatusSwitch.setChecked(false);
+            userStatusSwitch.setText(R.string.unavailable_status);
+        }
+        else if(userStatusValue.equals("true")) {
+            userStatusSwitch.setChecked(true);
+            userStatusSwitch.setText(R.string.available_status);
+        }
+        else {
+            Toast.makeText(getActivity(), "Network connection error, please try again", Toast.LENGTH_SHORT).show();
+        }
+        userStatusSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                userNextStatus = isChecked;
+                setAvailabeStatus();
+            }
+        });
         return v;
     }
 
-    private void userInfoRequest() {
+    private void setAvailabeStatus() {
+        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+        Network network = new BasicNetwork(new HurlStack());
+        RequestQueue mRequestQueue = new RequestQueue(cache, network);
+        mRequestQueue.start();
+        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        userId = getActivity().getIntent().getStringExtra("userId");
+        final String url = "https://freetime-backend-dev.herokuapp.com/user/" + userId;
+        status = String.valueOf(userNextStatus);
+
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                        String responseStr = response;
+                            try {
+                                JSONObject jsonObj = new JSONObject(responseStr);
+                                String availableString = jsonObj.getString("available");
+                                if (availableString.equals("true")) {
+                                    userStatusSwitch.setText(R.string.available_status);
+                                    userStatusSwitch.setChecked(true);
+                                    Toast.makeText(getActivity(), "You are available now", Toast.LENGTH_SHORT).show();
+                                } else if (availableString.equals("false")) {
+                                    userStatusSwitch.setText(R.string.unavailable_status);
+                                    userStatusSwitch.setChecked(false);
+                                    Toast.makeText(getActivity(), "You are not available now", Toast.LENGTH_SHORT).show();
+                                } else {
+                                        userStatusSwitch.setText(R.string.connection_error);
+                                    Toast.makeText(getActivity(), "Connection error!", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (final JSONException e) {
+                                userStatusSwitch.setText(R.string.connection_error);
+                                Toast.makeText(getActivity(), "Connection error!", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Json parsing error: " + e.getMessage());
+                            }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        userStatusSwitch.setText(R.string.connection_error);
+                        Toast.makeText(getActivity(), "Connection error!", Toast.LENGTH_SHORT).show();
+                        Log.d("Error.Response", "volleyError");
+                    }
+                }
+        ) {
+            @Override
+
+            protected Map<String, String> getParams()
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("available", status);
+                return params;
+            }
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", tokenId);
+                return headers;
+            }
+        };
+        queue.add(putRequest);
+    }
+
+    private void userFriendsInfoRequest() {
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network network = new BasicNetwork(new HurlStack());
         RequestQueue mRequestQueue = new RequestQueue(cache, network);
@@ -160,13 +232,6 @@ public class HomeFragment extends Fragment {
                             }
                         } catch (final JSONException e) {
                             Log.e(TAG, "Json parsing error: " + e.getMessage());
-                            runOnUiThread(new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity(), "Json parsing error: " + e.getMessage(),
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            }));
                         }
                     }
                 },
@@ -184,8 +249,6 @@ public class HomeFragment extends Fragment {
                 headers.put("Authorization", tokenId);
                 return headers;
             }
-            private void runOnUiThread(Runnable runnable) {
-    }
         };
         queue.add(getRequest);
     }
@@ -216,6 +279,5 @@ public class HomeFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-
     }
 }
