@@ -134,14 +134,8 @@ public class SearchFragment extends Fragment {
                 searchFriendsInfoRequest();
             }
         });
-//        InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-//        inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),
-//                InputMethodManager.HIDE_NOT_ALWAYS);
-
         return v;
     }
-
-
 
     private void searchFriendsInfoRequest() {
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
