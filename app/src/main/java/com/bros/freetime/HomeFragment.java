@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -176,7 +177,6 @@ public class HomeFragment extends Fragment {
                 }
         ) {
             @Override
-
             protected Map<String, String> getParams()
             {
                 Map<String, String> params = new HashMap<String, String>();
@@ -210,6 +210,7 @@ public class HomeFragment extends Fragment {
                         // response
                         Log.d("Response", response);
                         String responseStr = response;
+                        lv.setFilterText(response);
                         try {
                             JSONObject jsonObj = new JSONObject(responseStr);
                             // Getting JSON Array node
@@ -217,17 +218,30 @@ public class HomeFragment extends Fragment {
                             // looping through All Contacts
                             for (int i = 0; i < contacts.length(); i++) {
                                 JSONObject c = contacts.getJSONObject(i);
-                                String id = c.getString("id");
+                                String status = c.getString("available");
+                                if(status.contains("fal")) {
+                                    status = "UnAvailable";
+                                } else if(status.contains("tru")) {
+                                    status = "Available";
+                                }
+                                String email = c.getString("email");
                                 String first_name = c.getString("first_name");
+                                String final_first_name = first_name;
+                                if (first_name.contains("nu")){
+                                    final_first_name = "";}
                                 String last_name = c.getString("last_name");
+                                String final_last_name = last_name;
+                                if(last_name.contains("nu")){
+                                    final_last_name = "";}
                                 HashMap<String, String> contact = new HashMap<>();
-                                contact.put("id", id);
-                                contact.put("first_name", first_name);
-                                contact.put("last_name", last_name);
+                                contact.put("status", status);
+                                contact.put("email", email);
+                                contact.put("first_name", final_first_name);
+                                contact.put("last_name", final_last_name);
                                 contactList.add(contact);
                                 ListAdapter adapter = new SimpleAdapter(getActivity(), contactList,
-                                        R.layout.list_item, new String[]{"id", "first_name", "last_name"},
-                                        new int[]{R.id.id, R.id.first_name, R.id.last_name});
+                                        R.layout.list_item, new String[]{"status", "email", "first_name", "last_name"},
+                                        new int[]{R.id.status, R.id.email, R.id.first_name, R.id.last_name});
                                 lv.setAdapter(adapter);
                             }
                         } catch (final JSONException e) {
@@ -280,4 +294,5 @@ public class HomeFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }
