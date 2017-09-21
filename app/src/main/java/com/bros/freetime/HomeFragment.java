@@ -29,7 +29,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -201,7 +200,6 @@ public class HomeFragment extends Fragment {
         final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         userId = getActivity().getIntent().getStringExtra("userId");
         final String url = "https://freetime-backend-dev.herokuapp.com/user/" + userId + "/friends/";
-
         StringRequest getRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
 
@@ -210,38 +208,29 @@ public class HomeFragment extends Fragment {
                         // response
                         Log.d("Response", response);
                         String responseStr = response;
-                        lv.setFilterText(response);
                         try {
                             JSONObject jsonObj = new JSONObject(responseStr);
                             // Getting JSON Array node
                             JSONArray contacts = jsonObj.getJSONArray("friends");
                             // looping through All Contacts
                             for (int i = 0; i < contacts.length(); i++) {
-                                JSONObject c = contacts.getJSONObject(i);
-                                String status = c.getString("available");
-                                if(status.contains("fal")) {
-                                    status = "UnAvailable";
-                                } else if(status.contains("tru")) {
-                                    status = "Available";
-                                }
-                                String email = c.getString("email");
-                                String first_name = c.getString("first_name");
-                                String final_first_name = first_name;
-                                if (first_name.contains("nu")){
-                                    final_first_name = "";}
-                                String last_name = c.getString("last_name");
-                                String final_last_name = last_name;
-                                if(last_name.contains("nu")){
-                                    final_last_name = "";}
+                                JSONObject contactJSONObject = contacts.getJSONObject(i);
+                                String email = contactJSONObject.getString("email");
+                                String first_name = contactJSONObject.getString("first_name");
+                                first_name = (first_name.equals("null")) ? "" : first_name;
+                                String last_name = contactJSONObject.getString("last_name");
+                                last_name = (last_name.equals("null")) ? "" : last_name;
+                                String status = contactJSONObject.getString("available");
                                 HashMap<String, String> contact = new HashMap<>();
-                                contact.put("status", status);
                                 contact.put("email", email);
-                                contact.put("first_name", final_first_name);
-                                contact.put("last_name", final_last_name);
+                                contact.put("first_name", first_name);
+                                contact.put("last_name", last_name);
+                                status = (status.equals("true")) ? "Available" : "UnAvailable";
+                                contact.put("status", status);
                                 contactList.add(contact);
                                 ListAdapter adapter = new SimpleAdapter(getActivity(), contactList,
-                                        R.layout.list_item, new String[]{"status", "email", "first_name", "last_name"},
-                                        new int[]{R.id.status, R.id.email, R.id.first_name, R.id.last_name});
+                                        R.layout.list_item, new String[]{"email", "first_name", "last_name", "status"},
+                                        new int[]{R.id.email, R.id.first_name, R.id.last_name, R.id.status});
                                 lv.setAdapter(adapter);
                             }
                         } catch (final JSONException e) {
@@ -294,5 +283,4 @@ public class HomeFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
 }

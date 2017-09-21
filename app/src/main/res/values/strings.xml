@@ -16,9 +16,7 @@
     <string name="connection_error">Connection Error</string>
     <string name="available_status">Available</string>
     <string name="unavailable_status">Unavailable</string>
-
     <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
-
     <string name="facebook_app_id">238739313313641</string>
     <string name="fb_login_protocol_scheme">fb238739313313641</string>
 
