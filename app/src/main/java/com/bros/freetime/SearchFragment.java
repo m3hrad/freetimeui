@@ -91,9 +91,11 @@ public class SearchFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+//        savedInstanceState = null;
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-    //        mParam1 = getArguments().getString(ARG_PARAM1);
+//            setRetainInstance(true);
+            //        mParam1 = getArguments().getString(ARG_PARAM1);
       //      mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -145,6 +147,12 @@ public class SearchFragment extends Fragment {
                 addFriend();
             }
         });
+
+//        ((SearchFragment) getActivity()
+//                .getSupportFragmentManager()
+//                .findFragmentByTag("homeFragment")
+//        )
+
         return v;
     }
 
@@ -162,18 +170,16 @@ public class SearchFragment extends Fragment {
         final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         userId = getActivity().getIntent().getStringExtra("userId");
         final String url = "https://freetime-backend-dev.herokuapp.com/user/" + userId + "/friends";
-
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 new Response.Listener<String>() {
-
                     @Override
                     public void onResponse(String response) {
                         // response
                         Log.d("Response", response);
                         try {
                             if(response.equals("OK")) {
-                                Toast.makeText(getActivity(), "You are friend with " + friendEmail + " now.", Toast.LENGTH_LONG).show();
-                                changeSearchFragmentToHomeFragment();
+                                Toast.makeText(getActivity(), "You are friend with " + friendEmail + " now.", Toast.LENGTH_SHORT).show();
+//                                changeSearchFragmentToHomeFragment();
                             }
                             JSONObject jsonObj = new JSONObject(response);
                         } catch (final Exception e) {

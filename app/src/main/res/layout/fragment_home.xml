@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.bros.freetime.HomeFragment">
+
+    <!--<FrameLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/fragment_home">-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,15 +22,14 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-        <Switch
-            android:id="@+id/userStatusSwitch"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.1"
-            android:text="Available"
-            android:layout_alignParentRight="true"/>
+            android:layout_weight="0.1">
+
+            <Switch
+                android:id="@+id/userStatusSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"/>
 
         </RelativeLayout>
 
@@ -38,4 +41,6 @@
 
     </LinearLayout>
 
-</FrameLayout>
+    <!--</FrameLayout>-->
+
+</RelativeLayout>

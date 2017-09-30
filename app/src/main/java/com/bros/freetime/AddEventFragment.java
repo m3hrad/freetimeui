@@ -44,8 +44,10 @@ public class AddEventFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+//        savedInstanceState = null;
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+//            setRetainInstance(true);
         }
     }
 

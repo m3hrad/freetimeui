@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
@@ -45,9 +47,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -57,6 +63,8 @@ import static android.R.attr.fragment;
 import static android.R.attr.value;
 import static com.bros.freetime.R.id.emailLogin;
 import static com.bros.freetime.R.id.loginButton;
+import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.facebook.FacebookSdk.getCacheDir;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
@@ -70,8 +78,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private String idToken;
     CallbackManager callbackManager;
     private String loginMethod = "";
-    private String userIdString, userAvailable;
-
+    private String userIdString, userAvailable, userEmail;
+    private String statusFriend;
+    private ArrayList<HashMap<String, String>> contactList;
+    Intent intent;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -323,7 +333,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Log.d(TAG, "connection failed!");
     }
 
-    private void sendLoginRequestToBack() {
+    protected void sendLoginRequestToBack() {
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network network = new BasicNetwork(new HurlStack());
         RequestQueue mRequestQueue = new RequestQueue(cache, network);
@@ -348,10 +358,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                                 JSONObject jsonObj = new JSONObject(response);
                                                 userIdString = jsonObj.getString("id");
                                                 userAvailable = jsonObj.getString("available");
-                                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                                userEmail = jsonObj.getString("email");
+                                                intent = new Intent(LoginActivity.this, MainActivity.class);
                                                 intent.putExtra("userId", userIdString);
                                                 intent.putExtra("tokenId", idToken);
                                                 intent.putExtra("availableStatus", userAvailable);
+                                                intent.putExtra("userEmail", userEmail);
+                                                emailLoginEditText.setText(userIdString);
+                                                emailRegisterEditText.setText(userEmail);
+//                                                userFriendsInfoRequest();
                                                 startActivity(intent);
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
@@ -387,4 +402,85 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
     }
+
+    private void userFriendsInfoRequest() {
+        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+        Network network = new BasicNetwork(new HurlStack());
+        RequestQueue mRequestQueue = new RequestQueue(cache, network);
+        mRequestQueue.start();
+        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+//        userId = getActivity().getIntent().getStringExtra("userId");
+//        final String url = "https://freetime-backend-dev.herokuapp.com/user/" + userId + "/friends/";
+        final String url = "https://freetime-backend-dev.herokuapp.com/user/" + userIdString + "/friends/";
+        StringRequest getRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                        String responseStr = response;
+                        try {
+                            JSONObject jsonObj = new JSONObject(responseStr);
+                            // Getting JSON Array node
+                            JSONArray contacts = jsonObj.getJSONArray("friends");
+                            // looping through All Contacts
+                            for (int i = 0; i < contacts.length(); i++) {
+                                JSONObject contactJSONObject = contacts.getJSONObject(i);
+                                String email = contactJSONObject.getString("email");
+                                String first_name = contactJSONObject.getString("first_name");
+                                first_name = (first_name.equals("null")) ? "" : first_name;
+                                String last_name = contactJSONObject.getString("last_name");
+                                last_name = (last_name.equals("null")) ? "" : last_name;
+                                statusFriend = contactJSONObject.getString("available");
+                                HashMap<String, String> contact = new HashMap<>();
+                                contact.put("email", email);
+                                contact.put("first_name", first_name);
+                                contact.put("last_name", last_name);
+                                statusFriend = (statusFriend.equals("true")) ? "Available" : "UnAvailable";
+                                contact.put("status", statusFriend);
+
+                                contactList.add(contact);
+                                //Sorting contalist by email
+                                try {
+                                    Collections.sort(contactList, new Comparator<HashMap<String, String>>() {
+                                        @Override
+                                        public int compare(HashMap<String, String> stringHashMapEmail, HashMap<String, String> stringHashMapEmail1) {
+                                            return stringHashMapEmail.get("status").compareTo(stringHashMapEmail1.get("status"));
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+//                                ListAdapter adapter = new SimpleAdapter(getActivity(), contactList, R.layout.list_item, new String[]{"email", "first_name", "last_name", "status"},
+//                                new int[]{R.id.email, R.id.first_name, R.id.last_name, R.id.status});
+//                                lv.setAdapter(adapter);
+
+                                intent.putExtra("contactListKey", contactList);
+                                startActivity(intent);
+                            }
+                        } catch (final JSONException e) {
+                            Log.e(TAG, "Json parsing error: " + e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Error.Response", error.getMessage());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                tokenId = getActivity().getIntent().getStringExtra("tokenId");
+                headers.put("Authorization", idToken);
+                return headers;
+            }
+        };
+        queue.add(getRequest);
+    }
+
+
 }
