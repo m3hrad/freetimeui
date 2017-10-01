@@ -10,7 +10,7 @@ android {
         multiDexEnabled true
         applicationId "com.bros.freetime"
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -28,7 +28,8 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:26.0.0'
+
+    compile 'com.android.support:support-compat:26.0.0'
     compile 'com.android.support:support-core-utils:26.0.0'
     compile 'com.android.support:support-core-ui:26.0.0'
     compile 'com.android.support:support-fragment:26.0.0'
@@ -42,7 +43,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:11.2.0'
     compile 'com.google.android.gms:play-services:11.2.0'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-    compile 'com.android.volley:volley:1.0.0'
+    compile 'com.mcxiaoke.volley:library:1.0.19'
 
     compile('com.google.code.findbugs:jsr305:2.0.1')
     compile 'pub.devrel:easypermissions:0.3.0'

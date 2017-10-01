@@ -4,13 +4,14 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -32,6 +33,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,6 +58,7 @@ public class SearchFragment extends Fragment {
     private ArrayList<HashMap<String, String>> contactList;
     private String tokenId;
     private String searchStringEditText;
+    private String friendId, friendEmail;
     View v;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -91,7 +94,7 @@ public class SearchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-    //        mParam1 = getArguments().getString(ARG_PARAM1);
+//            mParam1 = getArguments().getString(ARG_PARAM1);
       //      mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -100,6 +103,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         v = inflater.inflate(R.layout.fragment_search, container, false);
         contactList = new ArrayList<>();
         lv = (ListView) v.findViewById(R.id.list);
@@ -134,7 +138,83 @@ public class SearchFragment extends Fragment {
                 searchFriendsInfoRequest();
             }
         });
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                friendId = contactList.get(i).get("id").toString();
+                friendEmail = contactList.get(i).get("email").toString();
+                addFriend();
+            }
+        });
         return v;
+    }
+
+    private void goToHomeFragment() {
+        getFragmentManager().beginTransaction()
+                .replace(R.id.content, new HomeFragment())
+                .addToBackStack(null).commit();
+        ((MainActivity)getActivity()).setNavigationButtonToHome();
+    }
+
+    private void addFriend() {
+        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+        Network network = new BasicNetwork(new HurlStack());
+        final RequestQueue mRequestQueue = new RequestQueue(cache, network);
+        mRequestQueue.start();
+        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        userId = getActivity().getIntent().getStringExtra("userId");
+        final String url = "https://freetime-backend-dev.herokuapp.com/user/" + userId + "/friends";
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                        try {
+                            if(response.equals("OK")) {
+                                Toast.makeText(getActivity(), "You are friend with " + friendEmail + " now.", Toast.LENGTH_SHORT).show();
+                                goToHomeFragment();
+                            }
+                            JSONObject jsonObj = new JSONObject(response);
+                        } catch (final Exception e) {
+                            Log.e(TAG, "Json parsing error: " + e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String statusCode = String.valueOf(error.networkResponse.statusCode);
+                        //get response body and parse with appropriate encoding
+                        if (error.networkResponse.data != null) {
+                            try {
+                                String body = new String(error.networkResponse.data, "UTF-8");
+                                if(statusCode.equals("400")) {
+                                    Toast.makeText(getActivity(), body, Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("friendId", friendId);
+                return params;
+            }
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                tokenId = getActivity().getIntent().getStringExtra("tokenId");
+                headers.put("Authorization", tokenId);
+                return headers;
+            }
+        };
+        queue.add(putRequest);
     }
 
     private void searchFriendsInfoRequest() {
@@ -163,9 +243,9 @@ public class SearchFragment extends Fragment {
                             // looping through All Contacts
                             contactList.clear();
                             for (int i = 0; i < contacts.length(); i++) {
-                                JSONObject c = contacts.getJSONObject(i);
-                                String email = c.getString("email");
-                                String id = c.getString("id");
+                                JSONObject contactsJSONObject = contacts.getJSONObject(i);
+                                String email = contactsJSONObject.getString("email");
+                                String id = contactsJSONObject.getString("id");
                                 HashMap<String, String> contact = new HashMap<>();
                                 contact.put("email", email);
                                 contact.put("id",id);
@@ -186,7 +266,7 @@ public class SearchFragment extends Fragment {
                         Log.d("Error.Response", error.getMessage());
                     }
                 }
-        ) {
+        ){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
