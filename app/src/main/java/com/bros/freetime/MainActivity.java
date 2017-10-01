@@ -37,9 +37,9 @@ public class MainActivity extends AppCompatActivity{
                 case navigation_search:
                     selectedFragment = SearchFragment.newInstance();
                     break;
-                case R.id.navigation_add:
-                    selectedFragment = AddEventFragment.newInstance();
-                    break;
+//                case R.id.navigation_add:
+//                    selectedFragment = AddEventFragment.newInstance();
+//                    break;
             }
             if(item.toString().equals("")) {
             return true;
