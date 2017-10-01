@@ -13,10 +13,10 @@
         android:enabled="true"
         android:title="@string/title_home" />
 
-    <item
-        android:id="@+id/navigation_add"
-        android:icon="@drawable/ic_add_black_24dp"
-        android:enabled="true"
-        android:title="@string/title_add" />
+    <!--<item-->
+        <!--android:id="@+id/navigation_add"-->
+        <!--android:icon="@drawable/ic_add_black_24dp"-->
+        <!--android:enabled="true"-->
+        <!--android:title="@string/title_add" />-->
 
 </menu>
