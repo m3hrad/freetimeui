@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import static com.bros.freetime.R.id.navigation_search;
 
@@ -91,6 +93,8 @@ public class MainActivity extends AppCompatActivity{
 
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
+        LoginManager.getInstance().logOut();
+        this.finishAffinity();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -105,8 +109,6 @@ public class MainActivity extends AppCompatActivity{
         //no inspection Simplifiable If Statement
         if (id == R.id.sign_out) {
             signOut();
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
