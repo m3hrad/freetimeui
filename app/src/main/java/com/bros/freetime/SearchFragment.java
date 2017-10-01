@@ -149,11 +149,11 @@ public class SearchFragment extends Fragment {
         return v;
     }
 
-    private void changeSearchFragmentToHomeFragment() {
+    private void goToHomeFragment() {
         getFragmentManager().beginTransaction()
                 .replace(R.id.content, new HomeFragment())
                 .addToBackStack(null).commit();
-        ((MainActivity)getActivity()).defaultFragment();
+        ((MainActivity)getActivity()).setNavigationButtonToHome();
     }
 
     private void addFriend() {
@@ -173,7 +173,7 @@ public class SearchFragment extends Fragment {
                         try {
                             if(response.equals("OK")) {
                                 Toast.makeText(getActivity(), "You are friend with " + friendEmail + " now.", Toast.LENGTH_SHORT).show();
-                                changeSearchFragmentToHomeFragment();
+                                goToHomeFragment();
                             }
                             JSONObject jsonObj = new JSONObject(response);
                         } catch (final Exception e) {

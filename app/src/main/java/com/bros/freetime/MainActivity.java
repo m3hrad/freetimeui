@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        defaultFragment();
+        setNavigationButtonToHome();
         selectedFragment =HomeFragment.newInstance();
         getSelectedItem(navigation);
         String itemTostring = item.toString();
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity{
         getSelectedItem(navigation);
     }
 
-    public void defaultFragment() {
+    public void setNavigationButtonToHome() {
         navigation.getMenu().getItem(1).setChecked(true);
     }
 
