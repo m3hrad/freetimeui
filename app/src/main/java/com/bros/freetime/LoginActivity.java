@@ -364,9 +364,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                                 intent.putExtra("tokenId", idToken);
                                                 intent.putExtra("availableStatus", userAvailable);
                                                 intent.putExtra("userEmail", userEmail);
-                                                emailLoginEditText.setText(userIdString);
-                                                emailRegisterEditText.setText(userEmail);
-//                                                userFriendsInfoRequest();
                                                 startActivity(intent);
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
@@ -402,85 +399,4 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
     }
-
-    private void userFriendsInfoRequest() {
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
-        Network network = new BasicNetwork(new HurlStack());
-        RequestQueue mRequestQueue = new RequestQueue(cache, network);
-        mRequestQueue.start();
-        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-//        userId = getActivity().getIntent().getStringExtra("userId");
-//        final String url = "https://freetime-backend-dev.herokuapp.com/user/" + userId + "/friends/";
-        final String url = "https://freetime-backend-dev.herokuapp.com/user/" + userIdString + "/friends/";
-        StringRequest getRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // response
-                        Log.d("Response", response);
-                        String responseStr = response;
-                        try {
-                            JSONObject jsonObj = new JSONObject(responseStr);
-                            // Getting JSON Array node
-                            JSONArray contacts = jsonObj.getJSONArray("friends");
-                            // looping through All Contacts
-                            for (int i = 0; i < contacts.length(); i++) {
-                                JSONObject contactJSONObject = contacts.getJSONObject(i);
-                                String email = contactJSONObject.getString("email");
-                                String first_name = contactJSONObject.getString("first_name");
-                                first_name = (first_name.equals("null")) ? "" : first_name;
-                                String last_name = contactJSONObject.getString("last_name");
-                                last_name = (last_name.equals("null")) ? "" : last_name;
-                                statusFriend = contactJSONObject.getString("available");
-                                HashMap<String, String> contact = new HashMap<>();
-                                contact.put("email", email);
-                                contact.put("first_name", first_name);
-                                contact.put("last_name", last_name);
-                                statusFriend = (statusFriend.equals("true")) ? "Available" : "UnAvailable";
-                                contact.put("status", statusFriend);
-
-                                contactList.add(contact);
-                                //Sorting contalist by email
-                                try {
-                                    Collections.sort(contactList, new Comparator<HashMap<String, String>>() {
-                                        @Override
-                                        public int compare(HashMap<String, String> stringHashMapEmail, HashMap<String, String> stringHashMapEmail1) {
-                                            return stringHashMapEmail.get("status").compareTo(stringHashMapEmail1.get("status"));
-                                        }
-                                    });
-                                } catch (Exception e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-//                                ListAdapter adapter = new SimpleAdapter(getActivity(), contactList, R.layout.list_item, new String[]{"email", "first_name", "last_name", "status"},
-//                                new int[]{R.id.email, R.id.first_name, R.id.last_name, R.id.status});
-//                                lv.setAdapter(adapter);
-
-                                intent.putExtra("contactListKey", contactList);
-                                startActivity(intent);
-                            }
-                        } catch (final JSONException e) {
-                            Log.e(TAG, "Json parsing error: " + e.getMessage());
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", error.getMessage());
-                    }
-                }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-//                tokenId = getActivity().getIntent().getStringExtra("tokenId");
-                headers.put("Authorization", idToken);
-                return headers;
-            }
-        };
-        queue.add(getRequest);
-    }
-
-
 }

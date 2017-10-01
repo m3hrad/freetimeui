@@ -1,13 +1,10 @@
 package com.bros.freetime;
 
-import android.app.FragmentManager;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,17 +94,6 @@ public class HomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-//        RecieveUserFirstStatus();
-//        userFriendsInfoRequest();
-//        if (getArguments() != null) {
-//            setRetainInstance(true);
-////            lv = (ListView) v.findViewById(R.id.list);
-//
-//        }
-    }
-//////////////////////////////////////
-    public interface DrawerLocker {
-        public void setDrawerEnabled(boolean enabled);
     }
 
     @Override
@@ -122,19 +108,6 @@ public class HomeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-//        contactList = new ArrayList<>();
-//        userStatusSwitch = (Switch) v.findViewById(R.id.userStatusSwitch);
-//        lv = (ListView) v.findViewById(R.id.list);
-//        RecieveUserFirstStatus();
-//        userFriendsInfoRequest();
-//        userStatusSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-//                userNextStatus = isChecked;
-//                setAvailabeStatus();
-//            }
-//        });
-
     }
 
     @Override
@@ -145,8 +118,6 @@ public class HomeFragment extends Fragment {
             contactList = new ArrayList<>();
             userStatusSwitch = (Switch) v.findViewById(R.id.userStatusSwitch);
             lv = (ListView) v.findViewById(R.id.list);
-//                RecieveUserFirstStatus();
-//                userFriendsInfoRequest();
                 userStatusSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -164,7 +135,6 @@ public class HomeFragment extends Fragment {
         mRequestQueue.start();
         final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         final String url = "https://freetime-backend-dev.herokuapp.com/auth/";
-//        userStatusSwitch = (Switch) v.findViewById(R.id.userStatusSwitch);
                             // Send token to your backend via HTTPS
                             StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                                     new Response.Listener<String>() {

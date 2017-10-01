@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -91,11 +92,9 @@ public class SearchFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-//        savedInstanceState = null;
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-//            setRetainInstance(true);
-            //        mParam1 = getArguments().getString(ARG_PARAM1);
+//            mParam1 = getArguments().getString(ARG_PARAM1);
       //      mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -147,12 +146,6 @@ public class SearchFragment extends Fragment {
                 addFriend();
             }
         });
-
-//        ((SearchFragment) getActivity()
-//                .getSupportFragmentManager()
-//                .findFragmentByTag("homeFragment")
-//        )
-
         return v;
     }
 
@@ -160,6 +153,7 @@ public class SearchFragment extends Fragment {
         getFragmentManager().beginTransaction()
                 .replace(R.id.content, new HomeFragment())
                 .addToBackStack(null).commit();
+        ((MainActivity)getActivity()).defaultFragment();
     }
 
     private void addFriend() {
@@ -179,7 +173,7 @@ public class SearchFragment extends Fragment {
                         try {
                             if(response.equals("OK")) {
                                 Toast.makeText(getActivity(), "You are friend with " + friendEmail + " now.", Toast.LENGTH_SHORT).show();
-//                                changeSearchFragmentToHomeFragment();
+                                changeSearchFragmentToHomeFragment();
                             }
                             JSONObject jsonObj = new JSONObject(response);
                         } catch (final Exception e) {

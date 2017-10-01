@@ -44,10 +44,8 @@ public class AddEventFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-//        savedInstanceState = null;
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-//            setRetainInstance(true);
         }
     }
 
@@ -64,17 +62,6 @@ public class AddEventFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
 
     @Override
     public void onDetach() {
