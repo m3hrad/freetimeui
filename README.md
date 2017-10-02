@@ -26,3 +26,10 @@
     "message": "ID not found"
   }
 }
+
+# Signed Apk
+- key store path: C:\Mahyar\projects\freetimeui\android.jks
+- Alias: Bros
+- password: Bros123456
+- Organizational Unit: Android App
+- Organization: Bros company
