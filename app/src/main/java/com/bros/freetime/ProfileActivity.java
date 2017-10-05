@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,16 +29,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.bros.freetime.R.id.image;
 import static com.bros.freetime.R.id.userStatusSwitch;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.facebook.FacebookSdk.getCacheDir;
@@ -48,11 +54,36 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Button saveButton;
     private EditText firstNameEditText, lastNameEditText, emailEditText, phoneEditText;
     private String firstNameString, lasTNameString, emailString, phoneString, userId, tokenId;
+    ImageView image;
+
+    String ba1 = "Hello";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        image = (ImageView) findViewById(R.id.image_holder);
+
+        try {
+
+            BitmapDrawable drawable = (BitmapDrawable) image.getDrawable();
+            Bitmap bitmap = drawable.getBitmap();
+
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+//            byte[] byteArray = byteArrayOutputStream .toByteArray();
+
+            ByteArrayOutputStream baos = new  ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+            byte [] b=baos.toByteArray();
+            String ba1 =Base64.encodeToString(b, Base64.DEFAULT);
+
+//            ba1 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+        } catch (Exception e) {
+
+        }
+//        }
         firstNameEditText = (EditText) findViewById(R.id.firstNameEditText);
         lastNameEditText = (EditText) findViewById(R.id.lastNameEditText);
         emailEditText = (EditText) findViewById(R.id.emailEditText);
@@ -71,7 +102,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                firstNameEditText.setText(ba1.toString());
             }
         });
         //browsing image
@@ -95,7 +126,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             try {
                 stream = getContentResolver().openInputStream(data.getData());
                 Bitmap original = BitmapFactory.decodeStream(stream);
-                ((ImageView) findViewById(R.id.image_holder)).setImageBitmap(Bitmap.createScaledBitmap(original,
+                image.setImageBitmap(Bitmap.createScaledBitmap(original,
                         original.getWidth() / HALF, original.getHeight() / HALF, true));
             } catch (Exception e) {
                 e.printStackTrace();
