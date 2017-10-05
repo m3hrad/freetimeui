@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private String idToken;
     CallbackManager callbackManager;
     private String loginMethod = "";
-    private String userIdString, userAvailable, userEmail;
+    private String userIdString, userAvailable, userEmail, userFirstname, userLastname, userPhone;
     private String statusFriend;
     private ArrayList<HashMap<String, String>> contactList;
     Intent intent;
@@ -344,11 +344,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                                 userIdString = jsonObj.getString("id");
                                                 userAvailable = jsonObj.getString("available");
                                                 userEmail = jsonObj.getString("email");
+                                                userFirstname = jsonObj.getString("first_name");
+                                                userLastname = jsonObj.getString("last_name");
+//                                                userPhone = jsonObj.getString("phone_number");
                                                 intent = new Intent(LoginActivity.this, MainActivity.class);
                                                 intent.putExtra("userId", userIdString);
                                                 intent.putExtra("tokenId", idToken);
                                                 intent.putExtra("availableStatus", userAvailable);
                                                 intent.putExtra("userEmail", userEmail);
+                                                intent.putExtra("userFirstname", userFirstname);
+                                                intent.putExtra("userLastname", userLastname);
+//                                                intent.putExtra("userPhone", userPhone);
                                                 startActivity(intent);
                                             } catch (JSONException e) {
                                                 e.printStackTrace();

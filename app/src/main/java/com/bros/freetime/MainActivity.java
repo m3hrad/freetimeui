@@ -10,12 +10,18 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
+
+import static com.bros.freetime.R.id.emailRegister;
 import static com.bros.freetime.R.id.navigation_search;
+import static com.bros.freetime.R.id.status;
 
 public class MainActivity extends AppCompatActivity{
+
+    private String userEmailString, userFirstnameString, userLastnameString, userPhoneNumberString, userIdString, tokenIdString;
     private long mLastClickTime = 0;
     private Fragment selectedFragment;
     private String selectedFragmentName = null;
@@ -67,7 +73,12 @@ public class MainActivity extends AppCompatActivity{
         getSelectedItem(navigation);
         String itemTostring = item.toString();
         item.getItemId();
-
+        userEmailString = getIntent().getStringExtra("userEmail");
+        userFirstnameString = getIntent().getStringExtra("userFirstname");
+        userLastnameString = getIntent().getStringExtra("userLastname");
+        userIdString = getIntent().getStringExtra("userId");
+        tokenIdString = getIntent().getStringExtra("tokenId");
+//        userPhoneNumberString = getIntent().getStringExtra("userPhone");
         if(!itemTostring.equals(null)) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content, selectedFragment);
@@ -111,7 +122,24 @@ public class MainActivity extends AppCompatActivity{
             signOut();
             return true;
         }
+        if (id == R.id.profile) {
+            goToProfileActivity();
+        }
+        if (id == R.id.about) {
+            Toast.makeText(MainActivity.this, "created and designed by: Bros Company, Mehrad & Mahyar 2017", Toast.LENGTH_LONG).show();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goToProfileActivity() {
+        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+        intent.putExtra("userEmailString", userEmailString);
+        intent.putExtra("userFirstnameString", userFirstnameString);
+        intent.putExtra("userLastnameString", userLastnameString);
+        intent.putExtra("userIdString", userIdString);
+        intent.putExtra("tokenIdString", tokenIdString);
+//        intent.putExtra("userPhoneNumberString", userPhoneNumberString);
+        startActivity(intent);
     }
 
     @Override
