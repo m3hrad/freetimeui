@@ -28,8 +28,8 @@
 }
 
 # Signed Apk
-- key store path: C:\Mahyar\projects\freetimeui\android.jks
+- key store path: C:\Mahyar\projects\apk\signKey.jks
 - Alias: Bros
 - password: Bros123456
 - Organizational Unit: Android App
-- Organization: Bros company
+- Organization: Bros Company
