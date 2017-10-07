@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.bros.freetime.MainActivity">
+    tools:context="com.bros.freetime2.MainActivity">
 
     <FrameLayout
         android:id="@+id/content"

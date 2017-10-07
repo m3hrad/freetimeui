@@ -8,8 +8,8 @@ android {
     buildToolsVersion "26.0.0"
     defaultConfig {
         multiDexEnabled true
-        applicationId "com.bros.freetime"
-        minSdkVersion 21
+        applicationId "com.bros.freetime2"
+        minSdkVersion 19
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
