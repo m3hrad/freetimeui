@@ -67,6 +67,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private String statusFriend;
     private ArrayList<HashMap<String, String>> contactList;
     Intent intent;
+    private FirebaseAuth auth;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -92,6 +93,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+        //keep user logged in
+        auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            sendLoginRequestToBack();
+        }
     }
 
     @Override

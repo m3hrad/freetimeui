@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:610634232361:android:e41de1b4bad6aa35",
         "android_client_info": {
-          "package_name": "com.bros.freetime"
+          "package_name": "com.bros.freetime2"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "610634232361-hgdr78nl032u29rf5jis29hgcammbrs5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.bros.freetime",
+            "package_name": "com.bros.freetime2",
             "certificate_hash": "da0773d86bc7d3e69f3673bf43a37e79872acb91"
           }
         },

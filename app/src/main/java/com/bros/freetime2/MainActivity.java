@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -108,6 +109,10 @@ public class MainActivity extends AppCompatActivity{
         //no inspection Simplifiable If Statement
         if (id == R.id.sign_out) {
             signOut();
+            return true;
+        }
+        if(id == R.id.About) {
+            Toast.makeText(MainActivity.this, "Bros Company, Mehrad & Mahyar, version:2", Toast.LENGTH_LONG).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
