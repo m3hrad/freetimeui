@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity{
             goToProfileActivity();
         }
         if (id == R.id.about) {
-            Toast.makeText(MainActivity.this, "created and designed by: Bros Company, Mehrad & Mahyar 2017", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Bros Company, Mehrad & Mahyar 2017, Version: 2", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
     }
