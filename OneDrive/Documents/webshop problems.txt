@@ -1,0 +1,11 @@
+Mehrad:
+Fixing the search button (show all products), 
+Removeitem from basket, 
+Add item to basket, 
+Product activity added, ia in the left site + button added.
+Aki:
+setting for adding a default address, name, email.
+get the phone number from api.
+explain the design.(search for online design) 
+Antti:
+find some api for shopping.

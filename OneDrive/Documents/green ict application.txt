@@ -1,0 +1,4 @@
+Niisku.lamk.fi
+juan16001
+Koodaus1
+mysql -u juan16001 -p
