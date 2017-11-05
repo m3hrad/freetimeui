@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bros.freetime2">
-
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-sdk
         android:minSdkVersion="21"
@@ -30,7 +29,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustNothing"
+            android:configChanges = "keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
     </application>
 
 </manifest>

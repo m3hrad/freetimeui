@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
@@ -68,6 +69,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private ArrayList<HashMap<String, String>> contactList;
     Intent intent;
     private FirebaseAuth auth;
+    private ProgressBar simpleProgressBar;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -78,6 +81,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         emailLoginEditText = (EditText) findViewById(R.id.emailLogin);
         passwordLoginEditText = (EditText) findViewById(R.id.passwordLogin);
         mFirebaseAuth = FirebaseAuth.getInstance();
+        simpleProgressBar = (ProgressBar) findViewById(R.id.simpleProgressBar);
 
         findViewById(R.id.googleButton).setOnClickListener(this);
         findViewById(R.id.registerButton).setOnClickListener(this);
@@ -245,6 +249,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void signInFacebook() {
+
+        simpleProgressBar.setVisibility(View.VISIBLE);
+
         callbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = (LoginButton) findViewById(R.id.facebookButton);
         loginButton.setReadPermissions("email", "public_profile");
@@ -271,6 +278,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void handleFacebookAccessToken(final AccessToken token) {
+
+        simpleProgressBar.setVisibility(View.VISIBLE);
+
         Log.d(TAG, "handleFacebookAccessToken:" + token);
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mFirebaseAuth.signInWithCredential(credential)
@@ -281,6 +291,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             // Sign in success, update UI with the signed-in user's information
                             sendLoginRequestToBack();
                             Log.d(TAG, "signInWithCredential:success");
+
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             updateUI(user);
                         } else {
@@ -325,6 +336,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     protected void sendLoginRequestToBack() {
+
+        simpleProgressBar.setVisibility(View.VISIBLE);
+
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network network = new BasicNetwork(new HurlStack());
         RequestQueue mRequestQueue = new RequestQueue(cache, network);

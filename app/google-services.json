@@ -8,14 +8,14 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:610634232361:android:e41de1b4bad6aa35",
+        "mobilesdk_app_id": "1:610634232361:android:05de7ff75425e8e9",
         "android_client_info": {
           "package_name": "com.bros.freetime2"
         }
       },
       "oauth_client": [
         {
-          "client_id": "610634232361-hgdr78nl032u29rf5jis29hgcammbrs5.apps.googleusercontent.com",
+          "client_id": "610634232361-r8vheloughrvonef24cg22fr8ia4hehu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.bros.freetime2",
@@ -44,37 +44,6 @@
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:610634232361:android:05de7ff75425e8e9",
-        "android_client_info": {
-          "package_name": "com.bros.freetime2"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "610634232361-kdt710uqeiv2rk592umm54gvrjbegeg1.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAXPtXwJhEaBlKciNuovQbkUDSAV4hnPl4"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2
