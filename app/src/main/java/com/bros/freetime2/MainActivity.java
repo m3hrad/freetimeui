@@ -1,5 +1,6 @@
 package com.bros.freetime2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import static com.bros.freetime2.R.id.navigation_search;
@@ -107,6 +109,12 @@ public class MainActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         //no inspection Simplifiable If Statement
+
+        if(id == R.id.profile) {
+            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+            startActivity(intent);
+            return true;
+        }
         if (id == R.id.sign_out) {
             signOut();
             return true;

@@ -29,6 +29,13 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+
+    compile('com.google.api-client:google-api-client-android:1.22.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    compile('com.google.apis:google-api-services-calendar:v3-rev254-1.22.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
     compile 'com.android.support:appcompat-v7:26.0.0'
     compile 'com.android.support:support-compat:26.0.0'
     compile 'com.android.support:support-core-utils:26.0.0'
@@ -37,7 +44,6 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.0.0'
     compile 'com.android.support:support-v4:26.0.0'
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.google.firebase:firebase-core:11.2.0'
     compile 'com.google.firebase:firebase-auth:11.2.0'
@@ -45,14 +51,8 @@ dependencies {
     compile 'com.google.android.gms:play-services:11.2.0'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.mcxiaoke.volley:library:1.0.19'
-
-    compile('com.google.code.findbugs:jsr305:2.0.1')
+    compile 'com.google.code.findbugs:jsr305:2.0.1'
     compile 'pub.devrel:easypermissions:0.3.0'
-    compile('com.google.api-client:google-api-client-android:1.22.0') {
-        exclude group: 'org.apache.httpcomponents'
-    }
-    compile('com.google.apis:google-api-services-calendar:v3-rev254-1.22.0') {
-        exclude group: 'org.apache.httpcomponents'
-    }
+    testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'
