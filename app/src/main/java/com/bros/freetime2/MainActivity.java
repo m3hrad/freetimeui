@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Profile;
@@ -75,7 +76,6 @@ public class MainActivity extends AppCompatActivity{
         userLastnameString = getIntent().getStringExtra("userLastname");
         userIdString = getIntent().getStringExtra("userId");
         tokenIdString = getIntent().getStringExtra("tokenId");
-//        userPhoneNumberString = getIntent().getStringExtra("userPhone");
         if(!itemTostring.equals(null)) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content, selectedFragment);
@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity{
 
         if(id == R.id.profile) {
             goToProfileActivity();
+
             return true;
         }
         if (id == R.id.sign_out) {
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity{
         intent.putExtra("userLastnameString", userLastnameString);
         intent.putExtra("userIdString", userIdString);
         intent.putExtra("tokenIdString", tokenIdString);
-//        intent.putExtra("userPhoneNumberString", userPhoneNumberString);
+        intent.putExtra("userPhoneNumberString", userPhoneNumberString);
         startActivity(intent);
     }
 

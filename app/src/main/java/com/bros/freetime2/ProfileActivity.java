@@ -53,7 +53,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         image = (ImageView) findViewById(R.id.image_holder);
-
+        image.setImageBitmap(null);
         try {
 
             BitmapDrawable drawable = (BitmapDrawable) image.getDrawable();
@@ -79,16 +79,20 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         emailEditText = (EditText) findViewById(R.id.emailEditText);
         phoneEditText = (EditText) findViewById(R.id.phoneEditText);
         saveButton = (Button) findViewById(R.id.saveButton);
+
         Intent intent = getIntent();
         emailString = intent.getStringExtra("userEmailString");
-        if(emailString.equals("null")) {
-            emailEditText.setHint("email");} else {emailEditText.setText(emailString);}
+            emailEditText.setHint("email");
+                emailEditText.setText(emailString);
         firstNameString = intent.getStringExtra("userFirstnameString");
-        if(firstNameString.equals("null")) {
-            firstNameEditText.setHint("firstname");} else {firstNameEditText.setText(firstNameString);}
+            firstNameEditText.setHint("firstname");
+            firstNameEditText.setText(firstNameString);
         lasTNameString = intent.getStringExtra("userLastnameString");
-        if(lasTNameString.equals("null")) {
-            lastNameEditText.setHint("lastname");} else {lastNameEditText.setText(lasTNameString);}
+            lastNameEditText.setHint("lastname");
+        lastNameEditText.setText(lasTNameString);
+        phoneString = intent.getStringExtra("userPhoneNumberString");
+        phoneEditText.setHint("phone number");
+        phoneEditText.setText(phoneString);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
