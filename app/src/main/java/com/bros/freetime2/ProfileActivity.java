@@ -1,10 +1,14 @@
 package com.bros.freetime2;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -27,11 +31,19 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,19 +56,25 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Button saveButton;
     private EditText firstNameEditText, lastNameEditText, emailEditText, phoneEditText;
     private String firstNameString, lasTNameString, emailString, phoneString, userId, tokenId;
-    ImageView image;
+    ImageView imgView;
+    int PICK_IMAGE_REQUEST = 111;
+    Uri filePath;
+    ProgressDialog pd;
 
     String ba1 = "Hello";
+
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageRef = storage.getReferenceFromUrl("gs://free-time-c6774.appspot.com");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        image = (ImageView) findViewById(R.id.image_holder);
-        image.setImageBitmap(null);
+        imgView = (ImageView) findViewById(R.id.image_holder);
+        imgView.setImageBitmap(null);
         try {
 
-            BitmapDrawable drawable = (BitmapDrawable) image.getDrawable();
+            BitmapDrawable drawable = (BitmapDrawable) imgView.getDrawable();
             Bitmap bitmap = drawable.getBitmap();
 
 //            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -97,11 +115,77 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onClick(View view) {
                 firstNameEditText.setText(ba1.toString());
+//                uploadImage();
+                downloadImage();
             }
         });
         //browsing image
         findViewById(R.id.browse_button).setOnClickListener(this);
     }
+
+    // download  image from fireBase
+    private void downloadImage() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://free-time-c6774.appspot.com").child("mahyar.jpg");
+        final long ONE_MEGABYTE = 1024 * 1024;
+
+        //download file as a byte array
+        storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                imgView.setImageBitmap(bitmap);
+            }
+        });
+    }
+
+
+    //upload image to firebase:
+    private void uploadImage() {
+        if (filePath != null) {
+
+            StorageReference childRef = storageRef.child("shima.jpg");
+
+            //uploading the image
+            UploadTask uploadTask = childRef.putFile(filePath);
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    pd.dismiss();
+                    Toast.makeText(ProfileActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    pd.dismiss();
+                    Toast.makeText(ProfileActivity.this, "Upload Failed -> " + e, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(ProfileActivity.this, "Select an image", Toast.LENGTH_SHORT).show();
+        }
+    }
+//        @Override
+//        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//            super.onActivityResult(requestCode, resultCode, data);
+//
+//            if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+//                filePath = data.getData();
+//
+//                try {
+//                    //getting image from gallery
+//                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+//
+//                    //Setting image to ImageView
+//                    imgView.setImageBitmap(bitmap);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+
+
     //Browsing image from SD card
     @Override
     public void onClick(View v) {
@@ -115,12 +199,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     //Browsing image from SD card
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         InputStream stream = null;
-        if (requestCode == REQUEST_ID && resultCode == Activity.RESULT_OK) {
+        if (requestCode == requestCode && resultCode == Activity.RESULT_OK) {
+            filePath = data.getData();
             try {
                 stream = getContentResolver().openInputStream(data.getData());
                 Bitmap original = BitmapFactory.decodeStream(stream);
-                image.setImageBitmap(Bitmap.createScaledBitmap(original,
+//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                imgView.setImageBitmap(Bitmap.createScaledBitmap(original,
                         original.getWidth() / HALF, original.getHeight() / HALF, true));
             } catch (Exception e) {
                 e.printStackTrace();

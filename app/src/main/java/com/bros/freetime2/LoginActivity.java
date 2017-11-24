@@ -53,7 +53,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import static com.bros.freetime2.R.id.loginButton;
 
-public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public class LoginActivity extends AppCompatActivity implements
+//        GoogleApiClient.OnConnectionFailedListener,
+        View.OnClickListener {
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthstateListener;
@@ -88,35 +90,36 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         findViewById(R.id.loginButton).setOnClickListener(this);
         findViewById(R.id.facebookButton).setOnClickListener(this);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken(getString(R.string.default_web_client_id))
+//                .requestEmail()
+//                .build();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-        //keep user logged in
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .enableAutoManage(this, this)
+//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+//                .build();
+
+//        keep user logged in
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             sendLoginRequestToBack();
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
-        updateUI(currentUser);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mAuthstateListener != null)
-            mFirebaseAuth.removeAuthStateListener(mAuthstateListener);
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
+//        updateUI(currentUser);
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        if (mAuthstateListener != null)
+//            mFirebaseAuth.removeAuthStateListener(mAuthstateListener);
+//    }
 
     @Override
     public void onClick(View v) {
@@ -212,8 +215,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 // Sign in success, update UI with the signed-in user's information
                                 sendLoginRequestToBack();
                                 Log.d(TAG, "createUserWithEmail:success");
-                                FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                                updateUI(user);
+//                                FirebaseUser user = mFirebaseAuth.getCurrentUser();
+//                                updateUI(user);
                                 emailRegisterEditText.setText("");
                                 passwordRegisterEditText.setText("");
                                 passwordConfirmRegisterEditText.setText("");
@@ -330,10 +333,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private void updateUI(FirebaseUser user) {
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "connection failed!");
-    }
+//    @Override
+//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//        Log.d(TAG, "connection failed!");
+//    }
 
     protected void sendLoginRequestToBack() {
 
