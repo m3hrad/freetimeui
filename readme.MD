@@ -1,1 +1,1 @@
-I'm the readme
+This App is knowing your friends freetime
