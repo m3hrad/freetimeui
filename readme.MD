@@ -7,4 +7,4 @@
 ##### In the Search Fragment, user can search for his/her friends by email address. After seeing the search result, user can select his/her freind by clicking on the item and the friend will be added to friends's list immediately.
 ![alt text](https://user-images.githubusercontent.com/25009890/33401033-a6bf3cb6-d560-11e7-91d4-6ad288a86e39.jpg)
 ##### At the top right part of app, there is a menu including Signout, profile and about
-https://user-images.githubusercontent.com/25009890/33401034-a6dd9c42-d560-11e7-8595-6cbdc6b63c2a.jpg
+![alt text](https://user-images.githubusercontent.com/25009890/33401034-a6dd9c42-d560-11e7-8595-6cbdc6b63c2a.jpg)
