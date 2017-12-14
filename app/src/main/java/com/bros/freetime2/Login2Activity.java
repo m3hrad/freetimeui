@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
@@ -154,7 +155,16 @@ public class Login2Activity extends Activity implements View.OnClickListener{
             return;
         }
 
-        progressBar.setVisibility(View.VISIBLE);
+//        progressBar.setVisibility(View.VISIBLE);
+//
+//        final Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    // Do something after 5s = 5000ms
+//                                    progressBar.setVisibility(View.GONE);
+//                                }
+//                            }, 2000);
 
         //authenticate usermahya
         mAuth.signInWithEmailAndPassword(emailLoginString, passwordLoginString)
@@ -164,7 +174,7 @@ public class Login2Activity extends Activity implements View.OnClickListener{
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
-                        progressBar.setVisibility(View.GONE);
+//                        progressBar.setVisibility(View.GONE);
                         if (!task.isSuccessful()) {
                             // there was an error
                             if (passwordLoginString.length() < 6) {
@@ -173,6 +183,7 @@ public class Login2Activity extends Activity implements View.OnClickListener{
                                 Toast.makeText(Login2Activity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                             }
                         } else {
+                            progressBar.setVisibility(View.VISIBLE);
                             sendLoginRequestToBack();
 //                            Intent intent = new Intent(Login2Activity.this, MainActivity.class);
 //                            startActivity(intent);
@@ -215,8 +226,18 @@ public class Login2Activity extends Activity implements View.OnClickListener{
                                                 intent.putExtra("tokenId", idToken);
                                                 intent.putExtra("availableStatus", userAvailable);
                                                 intent.putExtra("userEmail", userEmail);
-                                                startActivity(intent);
-                                                finish();
+
+                                                final Handler handler = new Handler();
+                                                handler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        // Do something after 5s = 5000ms
+                                                        startActivity(intent);
+                                                        finish();
+                                                    }
+                                                }, 2000);
+
+
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
                                             }
@@ -268,22 +289,22 @@ public class Login2Activity extends Activity implements View.OnClickListener{
             Toast.makeText(Login2Activity.this, "The email doesn't have email format.", Toast.LENGTH_LONG).show();
         }
         else {
-        progressBar.setVisibility(View.VISIBLE);
         //create user
         mAuth.createUserWithEmailAndPassword(emailRegisterString, passwordRegisterString)
                 .addOnCompleteListener(Login2Activity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Toast.makeText(Login2Activity.this, "createUserWithEmail:onComplete:", Toast.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
+//                        Toast.makeText(Login2Activity.this, "createUserWithEmail:onComplete:", Toast.LENGTH_SHORT).show();
+//                        progressBar.setVisibility(View.GONE);
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
-                            Toast.makeText(Login2Activity.this, "Authentication failed.",
+                            Toast.makeText(Login2Activity.this, "The user exists.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
 //                            startActivity(new Intent(Login2Activity.this, MainActivity.class));
+                            progressBar.setVisibility(View.VISIBLE);
                             sendLoginRequestToBack();
                         }
                     }
@@ -302,6 +323,14 @@ public class Login2Activity extends Activity implements View.OnClickListener{
 @Override
 protected void onResume() {
         super.onResume();
-        progressBar.setVisibility(View.GONE);
+//    final Handler handler = new Handler();
+//    handler.postDelayed(new Runnable() {
+//        @Override
+//        public void run() {
+//            // Do something after 5s = 5000ms
+//            progressBar.setVisibility(View.GONE);
+//        }
+//    }, 5000);
+
         }
 }
