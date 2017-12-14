@@ -36,8 +36,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.facebook.FacebookSdk.getCacheDir;
+//import static com.facebook.FacebookSdk.getApplicationContext;
+//import static com.facebook.FacebookSdk.getCacheDir;
 
 public class SearchFragment extends Fragment {
 
@@ -127,11 +127,11 @@ public class SearchFragment extends Fragment {
     }
 
     private void addFriend() {
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+        Cache cache = new DiskBasedCache(getActivity().getCacheDir(), 1024 * 1024);
         Network network = new BasicNetwork(new HurlStack());
         final RequestQueue mRequestQueue = new RequestQueue(cache, network);
         mRequestQueue.start();
-        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        final RequestQueue queue = Volley.newRequestQueue(getContext());
         userId = getActivity().getIntent().getStringExtra("userId");
         final String url = "https://freetime-backend-dev.herokuapp.com/user/" + userId + "/friends";
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
@@ -188,11 +188,11 @@ public class SearchFragment extends Fragment {
     }
 
     private void searchFriendsInfoRequest() {
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+        Cache cache = new DiskBasedCache(getActivity().getCacheDir(), 1024 * 1024);
         Network network = new BasicNetwork(new HurlStack());
         RequestQueue mRequestQueue = new RequestQueue(cache, network);
         mRequestQueue.start();
-        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        final RequestQueue queue = Volley.newRequestQueue(getContext());
         userId = getActivity().getIntent().getStringExtra("userId");
         searchStringEditText = searchEditText.getText().toString();
         final String url = "https://freetime-backend-dev.herokuapp.com/user/?email=" + searchStringEditText;

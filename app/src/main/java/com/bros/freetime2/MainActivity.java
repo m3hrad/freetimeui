@@ -1,5 +1,6 @@
 package com.bros.freetime2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -9,13 +10,16 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import static com.bros.freetime2.R.id.navigation_search;
 
 public class MainActivity extends AppCompatActivity{
+    private String userEmailString, userFirstnameString, userLastnameString, userPhoneNumberString, userIdString, tokenIdString;
     private long mLastClickTime = 0;
     private Fragment selectedFragment;
     private String selectedFragmentName = null;
@@ -67,7 +71,11 @@ public class MainActivity extends AppCompatActivity{
         getSelectedItem(navigation);
         String itemTostring = item.toString();
         item.getItemId();
-
+        userEmailString = getIntent().getStringExtra("userEmail");
+        userFirstnameString = getIntent().getStringExtra("userFirstname");
+        userLastnameString = getIntent().getStringExtra("userLastname");
+        userIdString = getIntent().getStringExtra("userId");
+        tokenIdString = getIntent().getStringExtra("tokenId");
         if(!itemTostring.equals(null)) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content, selectedFragment);
@@ -107,6 +115,12 @@ public class MainActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         //no inspection Simplifiable If Statement
+
+//        if(id == R.id.profile) {
+//            goToProfileActivity();
+//
+//            return true;
+//        }
         if (id == R.id.sign_out) {
             signOut();
             return true;
@@ -116,6 +130,17 @@ public class MainActivity extends AppCompatActivity{
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goToProfileActivity() {
+        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+        intent.putExtra("userEmailString", userEmailString);
+        intent.putExtra("userFirstnameString", userFirstnameString);
+        intent.putExtra("userLastnameString", userLastnameString);
+        intent.putExtra("userIdString", userIdString);
+        intent.putExtra("tokenIdString", tokenIdString);
+        intent.putExtra("userPhoneNumberString", userPhoneNumberString);
+        startActivity(intent);
     }
 
     @Override

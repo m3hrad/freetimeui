@@ -1,9 +1,12 @@
 package com.bros.freetime2;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -46,12 +49,15 @@ import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import static com.bros.freetime2.R.id.loginButton;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private GoogleApiClient mGoogleApiClient;
@@ -73,38 +79,39 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+//        setContentView(R.layout.activity_login);
 
-        passwordRegisterEditText = (EditText) findViewById(R.id.passwordRegister);
-        passwordConfirmRegisterEditText = (EditText) findViewById(R.id.conPassRegister);
-        emailRegisterEditText = (EditText) findViewById(R.id.emailRegister);
-        emailLoginEditText = (EditText) findViewById(R.id.emailLogin);
-        passwordLoginEditText = (EditText) findViewById(R.id.passwordLogin);
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        simpleProgressBar = (ProgressBar) findViewById(R.id.simpleProgressBar);
+//        passwordRegisterEditText = (EditText) findViewById(R.id.passwordRegister);
+//        passwordConfirmRegisterEditText = (EditText) findViewById(R.id.conPassRegister);
+//        emailRegisterEditText = (EditText) findViewById(R.id.emailRegister);
+//        emailLoginEditText = (EditText) findViewById(R.id.emailLogin);
+//        passwordLoginEditText = (EditText) findViewById(R.id.passwordLogin);
+//        mFirebaseAuth = FirebaseAuth.getInstance();
+//        simpleProgressBar = (ProgressBar) findViewById(R.id.simpleProgressBar);
 
-        findViewById(R.id.googleButton).setOnClickListener(this);
-        findViewById(R.id.registerButton).setOnClickListener(this);
-        findViewById(R.id.loginButton).setOnClickListener(this);
-        findViewById(R.id.facebookButton).setOnClickListener(this);
+//        findViewById(R.id.googleButton).setOnClickListener(this);
+//        findViewById(R.id.registerButton).setOnClickListener(this);
+//        findViewById(R.id.loginButton).setOnClickListener(this);
+//        findViewById(R.id.facebookButton).setOnClickListener(this);
+        //////////////////////////////////////////
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken(getString(R.string.default_web_client_id))
+//                .requestEmail()
+//                .build();
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-        //keep user logged in
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .enableAutoManage(this, (GoogleApiClient.OnConnectionFailedListener) this)
+//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+//                .build();
+//////////////////////////////////////////////////////
+//        keep user logged in
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             sendLoginRequestToBack();
         }
     }
-
-    @Override
+////////////////////////////////////////////////////////////
+//    @Override
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
@@ -117,24 +124,24 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (mAuthstateListener != null)
             mFirebaseAuth.removeAuthStateListener(mAuthstateListener);
     }
-
+//////////////////////////////////////////////////////
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case loginButton:
-                firebaseLoginWithEmailAndPassword();
-                break;
-            case R.id.registerButton:
-                firebaseRegisterWithEmailAndPassword();
-                break;
-            case R.id.googleButton:
-                signInGoogle();
-                loginMethod = "google";
-                break;
-            case R.id.facebookButton:
-                signInFacebook();
-                loginMethod = "facebook";
-                break;
+//            case R.id.loginButton:
+//                firebaseLoginWithEmailAndPassword();
+//                break;
+//            case R.id.registerButton:
+//                firebaseRegisterWithEmailAndPassword();
+//                break;
+//            case R.id.googleButton:
+//                signInGoogle();
+//                loginMethod = "google";
+//                break;
+//            case R.id.facebookButton:
+//                signInFacebook();
+//                loginMethod = "facebook";
+//                break;
         }
     }
 
@@ -212,8 +219,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 // Sign in success, update UI with the signed-in user's information
                                 sendLoginRequestToBack();
                                 Log.d(TAG, "createUserWithEmail:success");
-                                FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                                updateUI(user);
+//                                FirebaseUser user = mFirebaseAuth.getCurrentUser();
+//                                updateUI(user);
                                 emailRegisterEditText.setText("");
                                 passwordRegisterEditText.setText("");
                                 passwordConfirmRegisterEditText.setText("");
@@ -253,28 +260,28 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         simpleProgressBar.setVisibility(View.VISIBLE);
 
         callbackManager = CallbackManager.Factory.create();
-        LoginButton loginButton = (LoginButton) findViewById(R.id.facebookButton);
-        loginButton.setReadPermissions("email", "public_profile");
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                FacebookSdk.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
-                Log.d(TAG, "handleFacebookAccessToken:" + loginResult.getAccessToken());
-                handleFacebookAccessToken(loginResult.getAccessToken());
-                if (BuildConfig.DEBUG) {
-                    FacebookSdk.setIsDebugEnabled(true);
-                }
-            }
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
-            }
-            @Override
-            public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
-            }
-        });
+//        LoginButton loginButton = (LoginButton) findViewById(R.id.facebookButton);
+//        loginButton.setReadPermissions("email", "public_profile");
+//        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+//            @Override
+//            public void onSuccess(LoginResult loginResult) {
+//                Log.d(TAG, "facebook:onSuccess:" + loginResult);
+//                FacebookSdk.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
+//                Log.d(TAG, "handleFacebookAccessToken:" + loginResult.getAccessToken());
+//                handleFacebookAccessToken(loginResult.getAccessToken());
+//                if (BuildConfig.DEBUG) {
+//                    FacebookSdk.setIsDebugEnabled(true);
+//                }
+//            }
+//            @Override
+//            public void onCancel() {
+//                Log.d(TAG, "facebook:onCancel");
+//            }
+//            @Override
+//            public void onError(FacebookException error) {
+//                Log.d(TAG, "facebook:onError", error);
+//            }
+//        });
     }
 
     private void handleFacebookAccessToken(final AccessToken token) {
@@ -330,10 +337,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private void updateUI(FirebaseUser user) {
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "connection failed!");
-    }
+//    @Override
+//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//        Log.d(TAG, "connection failed!");
+//    }
 
     protected void sendLoginRequestToBack() {
 
@@ -361,6 +368,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                             Log.d("Response", response);
                                             try {
                                                 JSONObject jsonObj = new JSONObject(response);
+
                                                 userIdString = jsonObj.getString("id");
                                                 userAvailable = jsonObj.getString("available");
                                                 userEmail = jsonObj.getString("email");
@@ -403,5 +411,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         }
                     }
                 });
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
