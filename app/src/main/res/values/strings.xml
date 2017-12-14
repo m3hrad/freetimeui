@@ -19,4 +19,7 @@
     <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
     <string name="facebook_app_id">238739313313641</string>
     <string name="fb_login_protocol_scheme">fb238739313313641</string>
+    <string name="title_activity_login2">Login</string>
+    <string name="minimum_password">Password too short, enter minimum 6 characters!</string>
+    <string name="auth_failed">Authentication failed, check your email and password or sign up</string>
 </resources>

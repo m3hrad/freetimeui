@@ -35,8 +35,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.facebook.FacebookSdk.getCacheDir;
+
+//import static com.facebook.FacebookSdk.getApplicationContext;
+//import static com.facebook.FacebookSdk.getCacheDir;
+//import static com.facebook.FacebookSdk.getApplicationContext;
+//import static com.facebook.FacebookSdk.getCacheDir;
 
 public class HomeFragment extends Fragment {
     private String TAG = HomeFragment.class.getSimpleName();
@@ -102,11 +105,11 @@ public class HomeFragment extends Fragment {
     }
 
     protected void RecieveUserFirstStatus() {
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+        Cache cache = new DiskBasedCache(getActivity().getCacheDir(), 1024 * 1024);
         Network network = new BasicNetwork(new HurlStack());
         RequestQueue mRequestQueue = new RequestQueue(cache, network);
         mRequestQueue.start();
-        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        final RequestQueue queue = Volley.newRequestQueue(getContext());
         final String url = "https://freetime-backend-dev.herokuapp.com/auth/";
                             // Send token to your backend via HTTPS
                             StringRequest postRequest = new StringRequest(Request.Method.POST, url,
@@ -158,11 +161,11 @@ public class HomeFragment extends Fragment {
     }
 
     private void setAvailabeStatus() {
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+        Cache cache = new DiskBasedCache(getActivity().getCacheDir(), 1024 * 1024);
         Network network = new BasicNetwork(new HurlStack());
         RequestQueue mRequestQueue = new RequestQueue(cache, network);
         mRequestQueue.start();
-        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        final RequestQueue queue = Volley.newRequestQueue(getContext());
         userId = getActivity().getIntent().getStringExtra("userId");
         final String url = "https://freetime-backend-dev.herokuapp.com/user/" + userId;
         statusUser = String.valueOf(userNextStatus);
@@ -222,11 +225,11 @@ public class HomeFragment extends Fragment {
     }
 
     private void userFriendsInfoRequest() {
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+        Cache cache = new DiskBasedCache(getActivity().getCacheDir(), 1024 * 1024);
         Network network = new BasicNetwork(new HurlStack());
         RequestQueue mRequestQueue = new RequestQueue(cache, network);
         mRequestQueue.start();
-        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        final RequestQueue queue = Volley.newRequestQueue(getContext());
         userId = getActivity().getIntent().getStringExtra("userId");
         final String url = "https://freetime-backend-dev.herokuapp.com/user/" + userId + "/friends/";
         StringRequest getRequest = new StringRequest(Request.Method.GET, url,

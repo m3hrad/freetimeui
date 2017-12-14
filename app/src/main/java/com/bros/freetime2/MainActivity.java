@@ -116,11 +116,11 @@ public class MainActivity extends AppCompatActivity{
         int id = item.getItemId();
         //no inspection Simplifiable If Statement
 
-        if(id == R.id.profile) {
-            goToProfileActivity();
-
-            return true;
-        }
+//        if(id == R.id.profile) {
+//            goToProfileActivity();
+//
+//            return true;
+//        }
         if (id == R.id.sign_out) {
             signOut();
             return true;
